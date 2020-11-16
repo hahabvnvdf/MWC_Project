@@ -75,26 +75,28 @@
         android:layout_marginTop="44dp"
         app:singleSelection="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.914"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/toggleStart"
-            style="?attr/materialButtonOutlinedStyle"
-            app:icon="@drawable/ic_start"
+            style="?attr/materialButtonStyle"
+            android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/toggle_start"/>
+            android:text="@string/toggle_start"
+            android:textColor="@color/white"
+            app:icon="@drawable/ic_start" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/toggleStop"
-            style="?attr/materialButtonOutlinedStyle"
+            style="?attr/materialButtonStyle"
             app:icon="@drawable/ic_stop"
+            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/white"
             android:text="@string/toggle_stop" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

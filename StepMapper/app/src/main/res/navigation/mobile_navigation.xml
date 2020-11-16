@@ -15,16 +15,17 @@
         android:id="@+id/nav_report"
         android:name="com.example.stepmapper.ui.report.ReportFragment"
         android:label="@string/menu_report"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_report" />
 
     <fragment
         android:id="@+id/nav_map"
-        android:name="com.example.stepmapper.ui.slideshow.MapFragment"
+        android:name="com.example.stepmapper.ui.map.MapFragment"
         android:label="@string/menu_map"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_map" />
+    
     <fragment
         android:id="@+id/nav_score"
         android:name="com.example.stepmapper.ui.scoreboard.ScoreboardFragment"
         android:label="@string/menu_scoreboard"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_scoreboard" />
 </navigation>

@@ -24,7 +24,7 @@ public class ScoreboardFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         scoreboardViewModel =
                 ViewModelProviders.of(this).get(ScoreboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View root = inflater.inflate(R.layout.fragment_scoreboard, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
         scoreboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
