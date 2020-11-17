@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.stepmapper.R;
-import com.example.stepmapper.ui.scoreboard.ScoreboardViewModel;
 
 public class ScoreboardFragment extends Fragment {
 
@@ -24,8 +23,11 @@ public class ScoreboardFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         scoreboardViewModel =
                 ViewModelProviders.of(this).get(ScoreboardViewModel.class);
+        if (container != null) {
+            container.removeAllViews();
+        }
         View root = inflater.inflate(R.layout.fragment_scoreboard, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
+        final TextView textView = root.findViewById(R.id.text_scoreboard);
         scoreboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

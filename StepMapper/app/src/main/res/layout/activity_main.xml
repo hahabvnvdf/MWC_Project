@@ -7,21 +7,28 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
+    <!-- This LinearLayout represents the contents of the screen  -->
+
+
+
+    <!-- The ActionBar displayed at the top -->
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:itemTextColor="@color/colorPrimary"
         app:menu="@menu/activity_main_drawer" />
 
-    <include
-        layout="@layout/app_bar_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

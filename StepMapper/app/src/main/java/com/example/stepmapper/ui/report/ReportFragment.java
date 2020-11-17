@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.stepmapper.R;
-import com.example.stepmapper.ui.report.ReportViewModel;
 
 public class ReportFragment extends Fragment {
 
@@ -23,8 +22,11 @@ public class ReportFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         reportViewModel =
                 ViewModelProviders.of(this).get(ReportViewModel.class);
+        if (container != null) {
+            container.removeAllViews();
+        }
         View root = inflater.inflate(R.layout.fragment_report, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
+        final TextView textView = root.findViewById(R.id.text_report);
         reportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

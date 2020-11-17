@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.stepmapper.R;
-import com.example.stepmapper.ui.map.MapViewModel;
 
 public class MapFragment extends Fragment {
 
@@ -23,8 +22,11 @@ public class MapFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         mapViewModel =
                 ViewModelProviders.of(this).get(MapViewModel.class);
+        if (container != null) {
+            container.removeAllViews();
+        }
         View root = inflater.inflate(R.layout.fragment_map, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
+        final TextView textView = root.findViewById(R.id.text_map);
         mapViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
