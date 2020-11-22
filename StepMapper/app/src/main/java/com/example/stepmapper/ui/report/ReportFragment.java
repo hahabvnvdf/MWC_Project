@@ -64,6 +64,15 @@ public class ReportFragment extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_report, container, false);
         anyChartView1 = root.findViewById(R.id.dayBarChart);
         anyChartView = root.findViewById(R.id.hourBarChart);
+        APIlib.getInstance().setActiveAnyChartView(anyChartView);
+        Toast.makeText(getContext(), "Hourly button clicked", Toast.LENGTH_SHORT).show();
+        anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
+        Cartesian cartesian = createColumnChart();
+        anyChartView.setBackgroundColor("#00000000");
+        anyChartView.setChart(cartesian);
+        anyChartView1.setVisibility(View.GONE);
+        anyChartView.setVisibility(View.VISIBLE);
+
         Button button_Hour = root.findViewById(R.id.button_Hourly);
         button_Hour.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v1) {
@@ -181,7 +190,17 @@ public class ReportFragment extends Fragment {
                         "                return 'yellow';" +
                         "            return '#55F2B9';" +
                         "        }");
+        /*
+        cartesian1.marker(data).type("function() {" +
+                "            if (this.value > 20)" +
+                "                return 'star5';" +
+                "        }");
 
+        cartesian1.marker(data).fill("function() {" +
+                "            if (this.value > 20)" +
+                "                return 'yellow';" +
+                "        }");
+        */
         column.tooltip()
                 .titleFormat("At day: {%X}")
                 .format("{%Value}{groupsSeparator: } Steps")
