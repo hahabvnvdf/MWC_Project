@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity  {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final int REQUEST_ACTIVITY_RECOGNITION_PERMISSION = 45;
+    private static final int REQUEST_LOCATION_PERMISSION = 50;
     private boolean runningQOrLater =
             android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
     private FirebaseAuth firebaseAuth;
