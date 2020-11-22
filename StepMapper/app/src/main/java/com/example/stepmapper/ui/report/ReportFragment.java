@@ -2,6 +2,7 @@ package com.example.stepmapper.ui.report;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,29 +62,29 @@ public class ReportFragment extends Fragment {
             container.removeAllViews();
         }
         final View root = inflater.inflate(R.layout.fragment_report, container, false);
+        anyChartView1 = root.findViewById(R.id.dayBarChart);
         anyChartView = root.findViewById(R.id.hourBarChart);
-
         Button button_Hour = root.findViewById(R.id.button_Hourly);
         button_Hour.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v1) {
+                APIlib.getInstance().setActiveAnyChartView(anyChartView);
                 Toast.makeText(getContext(), "Hourly button clicked", Toast.LENGTH_SHORT).show();
-                anyChartView.getDrawableState();
                 anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
                 Cartesian cartesian = createColumnChart();
                 anyChartView.setBackgroundColor("#00000000");
                 anyChartView.setChart(cartesian);
-                //anyChartView.refreshDrawableState();
+                anyChartView1.setVisibility(View.GONE);
+                anyChartView.setVisibility(View.VISIBLE);
             }
         });
 
         Button button_Week = root.findViewById(R.id.button_Weekly);
         button_Week.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v1) {
-
-                //APIlib.getInstance().setActiveAnyChartView(anyChartView1);
+                APIlib.getInstance().setActiveAnyChartView(anyChartView1);
+                anyChartView.invalidate();
                 Toast.makeText(getContext(), "Weekly button clicked", Toast.LENGTH_SHORT).show();
-                anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
-                anyChartView.getDrawableState();
+                anyChartView1.setProgressBar(root.findViewById(R.id.loadingBar));
                 Cartesian cartesian = null;
                 try {
                     cartesian = createBarChart();
@@ -91,9 +92,10 @@ public class ReportFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                anyChartView.setBackgroundColor("#00000000");
-                anyChartView.setChart(cartesian);
-                //anyChartView.refreshDrawableState();
+                anyChartView1.setBackgroundColor("#00000000");
+                anyChartView1.setChart(cartesian);
+                anyChartView.setVisibility(View.GONE);
+                anyChartView1.setVisibility(View.VISIBLE);
 
             }
 
@@ -116,18 +118,9 @@ public class ReportFragment extends Fragment {
                     data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
 
                 Column column = cartesian.column(data);
-                //column.fill("#55F2B9");
-                column.fill("function() {" +
-                        "            if (this.value < 20)" +
-                        "                return 'yellow';" +
-                        "            return '#55F2B9';" +
-                        "        }");
-                //column.stroke("#55F2B9");
-                column.stroke("function() {" +
-                        "            if (this.value < 20)" +
-                        "                return 'yellow';" +
-                        "            return '#55F2B9';" +
-                        "        }");
+                column.fill("#55F2B9");
+                column.stroke("#55F2B9");
+
                 column.tooltip()
                         .titleFormat("At hour: {%X}")
                         .format("{%Value}{groupsSeparator: } Steps")
@@ -178,13 +171,13 @@ public class ReportFragment extends Fragment {
         Column column = cartesian1.column(data);
 
         column.fill("function() {" +
-                        "            if (this.value < 100)" +
+                        "            if (this.value < 20)" +
                         "                return 'yellow';" +
                         "            return '#55F2B9';" +
                         "        }");
 
         column.stroke("function() {" +
-                        "            if (this.value < 100)" +
+                        "            if (this.value < 20)" +
                         "                return 'yellow';" +
                         "            return '#55F2B9';" +
                         "        }");
