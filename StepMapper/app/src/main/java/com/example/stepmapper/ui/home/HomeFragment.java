@@ -2,6 +2,7 @@ package com.example.stepmapper.ui.home;
 
 import android.content.Context;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.example.stepmapper.CongratsActivity;
+import com.example.stepmapper.MainActivity;
 import com.example.stepmapper.StepAppOpenHelper;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -69,6 +74,7 @@ public class HomeFragment extends Fragment {
         stepsCountTextView.setText(String.valueOf(stepsCompleted));
         stepsCountProgressBar.setProgress(stepsCompleted);
 
+
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensorACC = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
@@ -91,6 +97,7 @@ public class HomeFragment extends Fragment {
                     if(mSensorACC != null){
                         //register the ACC listener
                         mSensorManager.registerListener(listener, mSensorACC, SensorManager.SENSOR_DELAY_NORMAL);
+
                     }
                     else{
                         Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
@@ -107,6 +114,7 @@ public class HomeFragment extends Fragment {
             }
         });
         //////////////////////////////////////
+
         return root;
 
 
@@ -120,7 +128,7 @@ public class HomeFragment extends Fragment {
 
 // Sensor event listener
 class StepCounterListener implements SensorEventListener {
-
+    public Context context;
     private long lastUpdate = 0;
 
     // ACC Step counter
@@ -143,6 +151,7 @@ class StepCounterListener implements SensorEventListener {
     public String timestamp;
     public String day;
     public String hour;
+
 
 
     public StepCounterListener (SQLiteDatabase db, TextView tv, ProgressBar pb){
@@ -174,16 +183,7 @@ class StepCounterListener implements SensorEventListener {
                 jdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
                 String date = jdf.format(timeInMillis);
 
-                /*
-                // print a value every 1000 ms
-                long curTime = System.currentTimeMillis();
-                if ((curTime - lastUpdate) > 1000) {
-                    lastUpdate = curTime;
 
-                    Log.d("ACC", "X: " + String.valueOf(x) + " Y: " + String.valueOf(y) + " Z: "
-                            + String.valueOf(z) + " t: " + String.valueOf(date));
-
-                }*/
 
                 // Get the date, the day and the hour
                 timestamp = date;
@@ -195,7 +195,10 @@ class StepCounterListener implements SensorEventListener {
                 mTimeSeries.add(timestamp);
 
                 peakDetection();
+                if(mACCStepCounter==118)
+                {
 
+                }
                 break;
 
         }
@@ -210,7 +213,7 @@ class StepCounterListener implements SensorEventListener {
 
     private void peakDetection() {
         int windowSize = 20;
-
+        
         /* Peak detection algorithm derived from: A Step Counter Service for Java-Enabled Devices Using a Built-In Accelerometer, Mladenov et al.
          */
         int highestValX = mACCSeries.size(); // get the length of the series
@@ -251,12 +254,14 @@ class StepCounterListener implements SensorEventListener {
                     //update the ProgressBar
                     stepsCountProgressBar.setProgress(mACCStepCounter);
 
+
                     //Insert the data in the database
                     ContentValues values = new ContentValues();
                     values.put(StepAppOpenHelper.KEY_TIMESTAMP, timePointList.get(i));
                     values.put(StepAppOpenHelper.KEY_DAY, day);
                     values.put(StepAppOpenHelper.KEY_HOUR, hour);
                     database.insert(StepAppOpenHelper.TABLE_NAME, null, values);
+
                 }
             }
         }
