@@ -77,7 +77,6 @@ public class ReportFragment extends Fragment {
         button_Hour.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v1) {
                 APIlib.getInstance().setActiveAnyChartView(anyChartView);
-                Toast.makeText(getContext(), "Hourly button clicked", Toast.LENGTH_SHORT).show();
                 anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
                 Cartesian cartesian = createColumnChart();
                 anyChartView.setBackgroundColor("#00000000");
@@ -91,8 +90,6 @@ public class ReportFragment extends Fragment {
         button_Week.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v1) {
                 APIlib.getInstance().setActiveAnyChartView(anyChartView1);
-                anyChartView.invalidate();
-                Toast.makeText(getContext(), "Weekly button clicked", Toast.LENGTH_SHORT).show();
                 anyChartView1.setProgressBar(root.findViewById(R.id.loadingBar));
                 Cartesian cartesian = null;
                 try {
@@ -152,7 +149,7 @@ public class ReportFragment extends Fragment {
     public Cartesian createBarChart() throws ParseException {
 
         stepsByDay = StepAppOpenHelper.loadStepsByDay(getContext());
-        Toast.makeText(getContext(), "create bar chat called", Toast.LENGTH_SHORT).show();
+
         Map<String, Integer> graph_map = new TreeMap<>();
 
         Date startDate = new Date(cDate.getTime() - 518400000L);

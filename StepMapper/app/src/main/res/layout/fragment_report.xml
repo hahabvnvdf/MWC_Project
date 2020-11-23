@@ -8,30 +8,37 @@
     android:orientation="vertical"
     tools:context=".ui.report.ReportFragment">
 
-
     <Button
         android:id="@+id/button_Hourly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/toggle_Hourly"
+        android:background="@drawable/roundcorner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.247"
+        app:layout_constraintHorizontal_bias="0.291"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.090" />
+        app:layout_constraintVertical_bias="0.111"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        />
 
     <Button
         android:id="@+id/button_Weekly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/toggle_Weekly"
+        android:background="@drawable/roundcorner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.792"
+        app:layout_constraintHorizontal_bias="0.752"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.090" />
+        app:layout_constraintVertical_bias="0.111"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        />
 
     <com.anychart.AnyChartView
         android:id="@+id/hourBarChart"
@@ -41,19 +48,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="100dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.31" />
-    <com.anychart.AnyChartView
-        android:id="@+id/dayBarChart"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.31" />
+        <com.anychart.AnyChartView
+            android:id="@+id/dayBarChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.31"/>
 
 
 
