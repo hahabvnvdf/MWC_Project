@@ -107,5 +107,15 @@
         </TextView>
 
     </LinearLayout>
+    <Button
+        android:id="@+id/loginGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Login with Google"
+        android:textColor="#ffffff"
+        android:background="#005DFF"
+        android:layout_marginTop="30dp"
+        android:textSize="25sp"
+        android:textAllCaps="true"/>
 
 </LinearLayout>
