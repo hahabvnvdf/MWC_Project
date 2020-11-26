@@ -161,7 +161,7 @@ public class LoginFragment extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Toast.makeText(this, "firebaseAuthWithGoogle:" + account.getId(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "firebaseAuthWithGoogle:" + account.getId(), Toast.LENGTH_SHORT).show();
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -185,7 +185,7 @@ public class LoginFragment extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
 //                            Log.w(TAG, "signInWithCredential:failure", task.getException());
 
-                            Toast.makeText(LoginFragment.this, "Failed to login", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginFragment.this, "Failed to login" + task.getException(), Toast.LENGTH_SHORT).show();
 //                            Snackbar.make(mBinding.mainLayout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         }
 

@@ -2,15 +2,11 @@ package com.example.stepmapper.ui.home;
 
 import android.content.Context;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,13 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
-import com.example.stepmapper.CongratsActivity;
-import com.example.stepmapper.MainActivity;
 import com.example.stepmapper.StepAppOpenHelper;
-
+import com.example.stepmapper.FirebaseDatabaseHelper;
+import com.example.stepmapper.ui.user.LoginFragment;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,11 +29,15 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.example.stepmapper.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeFragment extends Fragment {
+    private static int stepsCompleted;
     public Context context;
     MaterialButtonToggleGroup materialButtonToggleGroup;
 
+    private FirebaseAuth firebaseAuth;
+//    private FirebaseUser user = firebaseAuth.getCurrentUser();
     // Text view variables
     public TextView stepsCountTextView;
 
@@ -49,13 +46,19 @@ public class HomeFragment extends Fragment {
     private Sensor mSensorACC;
     private SensorManager mSensorManager;
 
+    public static void setStepsCompleted(int stepsCompleted1) {
+        stepsCompleted = stepsCompleted1;
+    }
+    public static int getStepsCompleted() {
+        return stepsCompleted;
+    }
 
     // Progress Bar variable
     public ProgressBar stepsCountProgressBar;
 
     //Progress Count
     private int progressCount;
-    static int stepsCompleted = 0;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -65,25 +68,36 @@ public class HomeFragment extends Fragment {
         // Get the number of steps stored in the current date
         Date cDate = new Date();
         String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
-        stepsCompleted = StepAppOpenHelper.loadSingleRecord(getContext(), fDate);
-
         stepsCountTextView = (TextView) root.findViewById(R.id.stepsCount);
         stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         stepsCountProgressBar.setMax(100);
 
-        stepsCountTextView.setText(String.valueOf(stepsCompleted));
-        stepsCountProgressBar.setProgress(stepsCompleted);
+//        stepsCompleted = FirebaseDatabaseHelper.loadSingleRecord(stepsCountTextView, stepsCountProgressBar,fDate);
+//        Log.d("Main", String.valueOf(stepsCompleted));
+//        stepsCountTextView.setText(String.valueOf(stepsCompleted));
+//        stepsCountProgressBar.setProgress(stepsCompleted);
 
 
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensorACC = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
-        StepAppOpenHelper databaseOpenHelper =   new StepAppOpenHelper(this.getContext());;
-        SQLiteDatabase database = databaseOpenHelper.getWritableDatabase();
 
         // instantiate the StepCounterListener
-        listener = new StepCounterListener(database, stepsCountTextView, stepsCountProgressBar);
+        listener = new StepCounterListener(stepsCountTextView, stepsCountProgressBar, fDate);
         // Toggle group button
+
+        //Place code related to Start button
+        Toast.makeText(getContext(), "START", Toast.LENGTH_SHORT).show();
+
+        // Check if the Accelerometer sensor exists
+        if(mSensorACC != null){
+            //register the ACC listener
+            mSensorManager.registerListener(listener, mSensorACC, SensorManager.SENSOR_DELAY_NORMAL);
+
+        }
+        else{
+            Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
+        }
         materialButtonToggleGroup = (MaterialButtonToggleGroup) root.findViewById(R.id.toggleButtonGroup);
         materialButtonToggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
@@ -132,7 +146,7 @@ class StepCounterListener implements SensorEventListener {
     private long lastUpdate = 0;
 
     // ACC Step counter
-    public static int mACCStepCounter = HomeFragment.stepsCompleted;;
+
     ArrayList<Integer> mACCSeries = new ArrayList<Integer>();
     ArrayList<String> mTimeSeries = new ArrayList<String>();
     private double accMag = 0d;
@@ -146,19 +160,19 @@ class StepCounterListener implements SensorEventListener {
     // TextView
     TextView stepsCountTextView;
     ProgressBar stepsCountProgressBar;
+    public int mACCStepCounter;
     //
-    SQLiteDatabase database;
     public String timestamp;
     public String day;
     public String hour;
+    public String fDate;
 
 
 
-    public StepCounterListener (SQLiteDatabase db, TextView tv, ProgressBar pb){
-
+    public StepCounterListener(TextView tv, ProgressBar pb, String date){
         stepsCountTextView = tv;
         stepsCountProgressBar = pb;
-        database = db;
+        fDate = date;
     }
 
 
@@ -211,7 +225,10 @@ class StepCounterListener implements SensorEventListener {
     }
 
 
+
+
     private void peakDetection() {
+
         int windowSize = 20;
         
         /* Peak detection algorithm derived from: A Step Counter Service for Java-Enabled Devices Using a Built-In Accelerometer, Mladenov et al.
@@ -231,6 +248,11 @@ class StepCounterListener implements SensorEventListener {
 
         List<Integer> dataPointList = new ArrayList<Integer>();
         List<String> timePointList = new ArrayList<String>();
+        mACCStepCounter = FirebaseDatabaseHelper.loadSingleRecord(fDate);
+        Log.d("Main", String.valueOf(mACCStepCounter));
+        stepsCountTextView.setText(String.valueOf(mACCStepCounter));
+        //update the ProgressBar
+        stepsCountProgressBar.setProgress(mACCStepCounter);
 
         for (int p =0; p < valuesInWindow.size(); p++){
             dataPointList.add(valuesInWindow.get(p));
@@ -254,13 +276,14 @@ class StepCounterListener implements SensorEventListener {
                     //update the ProgressBar
                     stepsCountProgressBar.setProgress(mACCStepCounter);
 
+                    FirebaseDatabaseHelper.insertData(day, hour, timePointList.get(i), mACCStepCounter);
 
-                    //Insert the data in the database
-                    ContentValues values = new ContentValues();
-                    values.put(StepAppOpenHelper.KEY_TIMESTAMP, timePointList.get(i));
-                    values.put(StepAppOpenHelper.KEY_DAY, day);
-                    values.put(StepAppOpenHelper.KEY_HOUR, hour);
-                    database.insert(StepAppOpenHelper.TABLE_NAME, null, values);
+//                    //Insert the data in the database
+//                    ContentValues values = new ContentValues();
+//                    values.put(StepAppOpenHelper.KEY_TIMESTAMP, timePointList.get(i));
+//                    values.put(StepAppOpenHelper.KEY_DAY, day);
+//                    values.put(StepAppOpenHelper.KEY_HOUR, hour);
+//                    database.insert(StepAppOpenHelper.TABLE_NAME, null, values);
 
                 }
             }
