@@ -1,6 +1,7 @@
 package com.example.stepmapper;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -33,7 +34,9 @@ public class FirebaseDatabaseHelper{
 
     public static void insertData(final String day, final String hour, final String timeS, final int mACCStepCounter){
         if (firebaseAuth.getCurrentUser() != null) {
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(firebaseAuth.getCurrentUser().getEmail()+" " +firebaseAuth.getCurrentUser().getUid());
+            String username = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+//            Log.d("User", username);
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +firebaseAuth.getCurrentUser().getUid());
             String stepCount = Integer.toString(mACCStepCounter);
             userData.setStepCount(stepCount);
             userData.setTimeStamp(timeS);
