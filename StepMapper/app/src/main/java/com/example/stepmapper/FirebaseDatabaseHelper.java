@@ -33,7 +33,7 @@ public class FirebaseDatabaseHelper{
 
     public static void insertData(final String day, final String hour, final String timeS, final int mACCStepCounter){
         if (firebaseAuth.getCurrentUser() != null) {
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child("User: " +firebaseAuth.getCurrentUser().getUid());
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(firebaseAuth.getCurrentUser().getEmail()+" " +firebaseAuth.getCurrentUser().getUid());
             String stepCount = Integer.toString(mACCStepCounter);
             userData.setStepCount(stepCount);
             userData.setTimeStamp(timeS);
