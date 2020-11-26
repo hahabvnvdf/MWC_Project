@@ -72,10 +72,10 @@ public class HomeFragment extends Fragment {
         stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         stepsCountProgressBar.setMax(100);
 
-//        stepsCompleted = FirebaseDatabaseHelper.loadSingleRecord(stepsCountTextView, stepsCountProgressBar,fDate);
+        stepsCompleted = FirebaseDatabaseHelper.loadSingleRecord(fDate);
 //        Log.d("Main", String.valueOf(stepsCompleted));
-//        stepsCountTextView.setText(String.valueOf(stepsCompleted));
-//        stepsCountProgressBar.setProgress(stepsCompleted);
+        stepsCountTextView.setText(String.valueOf(stepsCompleted));
+        stepsCountProgressBar.setProgress(stepsCompleted);
 
 
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
