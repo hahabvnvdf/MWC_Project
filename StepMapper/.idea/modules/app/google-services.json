@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "934739389008",
+    "firebase_url": "https://stepmapper-3c21e.firebaseio.com",
+    "project_id": "stepmapper-3c21e",
+    "storage_bucket": "stepmapper-3c21e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934739389008:android:ea1c191c9fbbee8e56ff55",
+        "android_client_info": {
+          "package_name": "com.example.stepmapper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934739389008-ekesfvd1cte7i0nmnd6fbjsb4uf8ib73.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.stepmapper",
+            "certificate_hash": "e90f751a4ad044236395f40009ab1fc1cfa5d411"
+          }
+        },
+        {
+          "client_id": "934739389008-m9kmljlc1rtqdjfv41ilqd97ahckgdoc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf9wJGrEdoB61WJarn6Nco4DaddH7tJcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934739389008-m9kmljlc1rtqdjfv41ilqd97ahckgdoc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

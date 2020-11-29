@@ -1,22 +1,15 @@
 package com.example.stepmapper.ui.report;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.anychart.APIlib;
 import com.anychart.AnyChart;
@@ -24,9 +17,7 @@ import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
-import com.anychart.core.Chart;
 import com.anychart.core.cartesian.series.Column;
-import com.anychart.data.Mapping;
 import com.anychart.data.Set;
 import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
@@ -34,19 +25,17 @@ import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.example.stepmapper.R;
 import com.example.stepmapper.StepAppOpenHelper;
-import com.google.android.material.button.MaterialButtonToggleGroup;
-import android.os.Build;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ReportFragment extends Fragment {
+public class ReportFragment2 extends Fragment {
     public Context context;
     AnyChartView anyChartView;
     AnyChartView anyChartView1;
@@ -114,10 +103,6 @@ public class ReportFragment extends Fragment {
 
     public Cartesian createColumnChart(){
                 stepsByHour = StepAppOpenHelper.loadStepsByHour(getContext(), current_time);
-
-//                for (Map.Entry<Integer, Integer> entry : stepsByHour.entrySet()) {
-//                    Log.d("Map","Key = " + entry.getKey() + ", Value = " + entry.getValue());
-//                }
                 Map<Integer, Integer> graph_map = new TreeMap<>();
                 for(int i =0; i <24; i++){
                     graph_map.put(i,0);
