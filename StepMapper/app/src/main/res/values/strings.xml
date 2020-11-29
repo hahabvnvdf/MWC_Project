@@ -17,6 +17,8 @@
     <string name="start">Start</string>
     <string name="toggle_stop">stop</string>
     <string name="toggle_start">start</string>
+    <string name="start_tracking">start tracking</string>
+    <string name="stop_tracking">stop tracking</string>
     <string name="step_permission_denied">permission denied</string>
     <string name="acc_not_available">ACC not available</string>
     <string name="step_not_available">step detector not available</string>
