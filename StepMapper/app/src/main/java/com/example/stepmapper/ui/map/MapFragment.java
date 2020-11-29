@@ -61,3 +61,4 @@ public class MapFragment extends Fragment {
     }
 
 }
+// Base code from https://www.journaldev.com/13325/android-location-api-tracking-gps
