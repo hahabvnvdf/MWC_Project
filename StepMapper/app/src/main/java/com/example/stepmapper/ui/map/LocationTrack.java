@@ -7,11 +7,15 @@ import android.location.LocationListener;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.provider.Settings;
+import android.os.IBinder;
+import android.os.Bundle;
+import android.app.Service;
 
 import android.widget.Toast;
-
-
-
 
 
 public class LocationTrack extends Service implements LocationListener {
@@ -27,8 +31,10 @@ public class LocationTrack extends Service implements LocationListener {
     double latitude;
     double longitude;
 
+    // TODO: meaningful distance updates
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
 
+    // TODO: meaningful update times
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     protected LocationManager locationManager;
 
@@ -41,7 +47,7 @@ public class LocationTrack extends Service implements LocationListener {
 
         try {
             locationManager = (LocationManager) mContext
-                    .getSystemService(LOCATION_SERVICE);
+                    .getSystemService(Context.LOCATION_SERVICE);
 
             // get GPS status
             checkGPS = locationManager
@@ -145,11 +151,8 @@ public class LocationTrack extends Service implements LocationListener {
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-
         alertDialog.setTitle("GPS is not Enabled!");
-
         alertDialog.setMessage("Do you want to turn on GPS?");
-
 
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -164,11 +167,8 @@ public class LocationTrack extends Service implements LocationListener {
                 dialog.cancel();
             }
         });
-
-
         alertDialog.show();
     }
-
 
     public void stopListener() {
         if (locationManager != null) {
