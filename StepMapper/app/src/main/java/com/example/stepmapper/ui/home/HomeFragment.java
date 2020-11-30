@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         stepsCountProgressBar.setMax(100);
 
         stepsCompleted = FirebaseDatabaseHelper.loadSingleRecord(fDate);
-//        Log.d("Main", String.valueOf(stepsCompleted));
+        Log.d("Main", fDate);
         stepsCountTextView.setText(String.valueOf(stepsCompleted));
         stepsCountProgressBar.setProgress(stepsCompleted);
 

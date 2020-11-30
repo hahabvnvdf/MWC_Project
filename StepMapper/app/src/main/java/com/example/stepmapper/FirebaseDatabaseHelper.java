@@ -47,16 +47,18 @@ public class FirebaseDatabaseHelper{
     private static void fetchClientData(DataSnapshot dataSnapshot) {
         numSteps = 0;
         for (DataSnapshot child: dataSnapshot.getChildren()) {
-            numSteps = Integer.parseInt(child.getValue().toString());
+            if (child != null){
+                numSteps = Integer.parseInt(child.getValue().toString());
+            }
             HomeFragment.setStepsCompleted(numSteps);
-
             break;
         }
     }
 
     public static int loadSingleRecord(final String date){
         if (firebaseAuth.getCurrentUser() != null) {
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child("User: " +firebaseAuth.getCurrentUser().getUid());
+            String username = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +firebaseAuth.getCurrentUser().getUid());
             mDatabaseReference.child(date).orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
