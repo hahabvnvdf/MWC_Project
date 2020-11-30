@@ -10,13 +10,7 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.example.stepmapper.R;
 
 public class MapFragment extends Fragment {
@@ -38,12 +32,12 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                locationTrack = new LocationTrack(MapFragment.this);
+                locationTrack = new LocationTrack(getActivity());
 
                 if (locationTrack.canGetLocation()) {
                     double longitude = locationTrack.getLongitude();
                     double latitude = locationTrack.getLatitude();
-                    Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
                 } else {
                     locationTrack.showSettingsAlert();
                 }

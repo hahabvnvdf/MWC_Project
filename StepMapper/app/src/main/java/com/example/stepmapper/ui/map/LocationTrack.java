@@ -1,5 +1,19 @@
 package com.example.stepmapper.ui.map;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
+import androidx.core.app.ActivityCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
+
+import android.widget.Toast;
+
+
+
+
+
 public class LocationTrack extends Service implements LocationListener {
     private final Context mContext;
 
