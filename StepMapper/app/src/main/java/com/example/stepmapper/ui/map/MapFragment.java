@@ -24,25 +24,25 @@ public class MapFragment extends Fragment {
             container.removeAllViews();
         }
         View root = inflater.inflate(R.layout.fragment_map, container, false);
-        final TextView textView = root.findViewById(R.id.text_map);
+        final TextView textView = (TextView) root.findViewById(R.id.text_map);
 
-        Button btn = (Button)getView().findViewById(R.id.btn);
+        Button btn = (Button)root.findViewById(R.id.btn);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                locationTrack = new LocationTrack(getActivity());
-
-                if (locationTrack.canGetLocation()) {
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-                    Toast.makeText(getActivity(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
-                } else {
-                    locationTrack.showSettingsAlert();
-                }
-            }
-        });
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                locationTrack = new LocationTrack(getActivity());
+//
+//                if (locationTrack.canGetLocation()) {
+//                    double longitude = locationTrack.getLongitude();
+//                    double latitude = locationTrack.getLatitude();
+//                    Toast.makeText(getActivity(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
+//                } else {
+//                    locationTrack.showSettingsAlert();
+//                }
+//            }
+//        });
 
 
         return root;

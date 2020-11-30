@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity  {
 
         // Ask for activity recognition permission
         if (runningQOrLater) {
-            getActivity(REQUEST_ACTIVITY_RECOGNITION_PERMISSION);
+            getActivity();
         }
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
@@ -206,36 +206,36 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     // Ask for permission
-    private void getActivity(int Request) {
-        switch (Request){
-            case REQUEST_ACTIVITY_RECOGNITION_PERMISSION:
-                if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.ACTIVITY_RECOGNITION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]
-                                    {Manifest.permission.ACTIVITY_RECOGNITION},
-                            REQUEST_ACTIVITY_RECOGNITION_PERMISSION);
-                } else {
-                    return;        }
-            case REQUEST_COARSE_LOCATION_PERMISSION:
-                if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]
-                                    {Manifest.permission.ACCESS_COARSE_LOCATION},
-                            REQUEST_COARSE_LOCATION_PERMISSION);
-                } else {
-                    return;        }
-            case REQUEST_FINE_LOCATION_PERMISSION:
-                if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]
-                                    {Manifest.permission.ACCESS_FINE_LOCATION},
-                            REQUEST_FINE_LOCATION_PERMISSION);
-                } else {
-                    return;        }
-        }
+    private void getActivity() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACTIVITY_RECOGNITION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACTIVITY_RECOGNITION},
+                    REQUEST_ACTIVITY_RECOGNITION_PERMISSION);
+        } else {
+            return;        }
+    }
+    // Ask for permission
+    private void getCoarseLocation() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_COARSE_LOCATION_PERMISSION);
+        } else {
+            return;        }
+    }
+    private void getFineLocation() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION_PERMISSION);
+        } else {
+            return;        }
     }
 
 
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity  {
         if (requestCode == REQUEST_ACTIVITY_RECOGNITION_PERMISSION) {
             if(grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getActivity(REQUEST_ACTIVITY_RECOGNITION_PERMISSION);
+                getActivity();
             } else {
                 Toast.makeText(this,
                         R.string.step_permission_denied,
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity  {
         if (requestCode == REQUEST_COARSE_LOCATION_PERMISSION) {
             if(grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getActivity(REQUEST_COARSE_LOCATION_PERMISSION);
+                getCoarseLocation();
             } else {
                 Toast.makeText(this,
                         R.string.step_permission_denied,
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity  {
         if (requestCode == REQUEST_FINE_LOCATION_PERMISSION) {
             if(grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getActivity(REQUEST_FINE_LOCATION_PERMISSION);
+                getFineLocation();
             } else {
                 Toast.makeText(this,
                         R.string.step_permission_denied,

@@ -14,22 +14,25 @@ import android.provider.Settings;
 import android.os.IBinder;
 import android.os.Bundle;
 import android.app.Service;
+import android.util.Log;
+
 
 import android.widget.Toast;
+
+import com.example.stepmapper.MainActivity;
 
 
 public class LocationTrack extends Service implements LocationListener {
     private final Context mContext;
 
     boolean checkGPS = false;
-
     boolean checkNetwork = false;
-
     boolean canGetLocation = false;
 
     Location loc;
     double latitude;
     double longitude;
+
 
     // TODO: meaningful distance updates
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
@@ -44,7 +47,7 @@ public class LocationTrack extends Service implements LocationListener {
     }
 
     private Location getLocation() {
-
+/*
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(Context.LOCATION_SERVICE);
@@ -119,7 +122,7 @@ public class LocationTrack extends Service implements LocationListener {
                         longitude = loc.getLongitude();
                     }
                 }*/
-
+/*
             }
 
 
@@ -127,7 +130,8 @@ public class LocationTrack extends Service implements LocationListener {
             e.printStackTrace();
         }
 
-        return loc;
+        return loc;*/
+        return null;
     }
 
     public double getLongitude() {
@@ -173,7 +177,9 @@ public class LocationTrack extends Service implements LocationListener {
     public void stopListener() {
         if (locationManager != null) {
 
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -187,6 +193,8 @@ public class LocationTrack extends Service implements LocationListener {
         }
     }
 
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -199,17 +207,17 @@ public class LocationTrack extends Service implements LocationListener {
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-
+        Log.d("Latitude","status");
     }
 
     @Override
     public void onProviderEnabled(String s) {
-
+        Log.d("Latitude","enable");
     }
 
     @Override
     public void onProviderDisabled(String s) {
-
+        Log.d("Latitude","disable");
     }
 
 
