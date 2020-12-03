@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +33,12 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
+import com.example.stepmapper.FirebaseDatabaseHelper;
 import com.example.stepmapper.R;
 import com.example.stepmapper.StepAppOpenHelper;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.firebase.database.FirebaseDatabase;
+
 import android.os.Build;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +51,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ReportFragment extends Fragment {
+    private static boolean stepsByHourCheck = false;
     public Context context;
     AnyChartView anyChartView;
     AnyChartView anyChartView1;
@@ -54,28 +59,49 @@ public class ReportFragment extends Fragment {
     Date cDate = new Date();
     String current_time = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
 
-    public Map<Integer, Integer> stepsByHour = null;
-    public Map<String, Integer> stepsByDay = null;
+    public static void setStepsByHour(Map<Integer, Integer> stepsByHour) {
+        ReportFragment.stepsByHour.putAll(stepsByHour);
+    }
 
-    private Set set;
+    public static Map<Integer, Integer> getStepsByHour() {
+        return stepsByHour;
+    }
+
+    public static Map<Integer, Integer> stepsByHour = new HashMap<>();
+
+    public static Map<String, Integer> getStepsByDay() {
+        return stepsByDay;
+    }
+
+    public static void setStepsByDay(Map<String, Integer> stepsByDay) {
+        ReportFragment.stepsByDay.putAll(stepsByDay);
+    }
+
+    public static Map<String, Integer> stepsByDay = new HashMap<>();
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         if (container != null) {
             container.removeAllViews();
         }
         final View root = inflater.inflate(R.layout.fragment_report, container, false);
+        FirebaseDatabaseHelper.loadStepsByDay();
+        FirebaseDatabaseHelper.loadStepsByHour(current_time);
         anyChartView1 = root.findViewById(R.id.dayBarChart);
         anyChartView = root.findViewById(R.id.hourBarChart);
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
         Toast.makeText(getContext(), "Hourly button clicked", Toast.LENGTH_SHORT).show();
         anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
+
         Cartesian cartesian = createColumnChart();
         anyChartView.setBackgroundColor("#00000000");
         anyChartView.setChart(cartesian);
         anyChartView1.setVisibility(View.GONE);
         anyChartView.setVisibility(View.VISIBLE);
 
-        Button button_Hour = root.findViewById(R.id.button_Hourly);
+
+        final Button button_Hour = root.findViewById(R.id.button_Hourly);
         button_Hour.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v1) {
                 APIlib.getInstance().setActiveAnyChartView(anyChartView);
@@ -109,52 +135,64 @@ public class ReportFragment extends Fragment {
 
         });
 
+//
+
+
+
         return root;
     }
 
     public Cartesian createColumnChart(){
-                stepsByHour = StepAppOpenHelper.loadStepsByHour(getContext(), current_time);
 
-//                for (Map.Entry<Integer, Integer> entry : stepsByHour.entrySet()) {
-//                    Log.d("Map","Key = " + entry.getKey() + ", Value = " + entry.getValue());
-//                }
-                Map<Integer, Integer> graph_map = new TreeMap<>();
-                for(int i =0; i <24; i++){
-                    graph_map.put(i,0);
+
+        Map<Integer, Integer> graph_map = new TreeMap<>();
+        int maxStep = 0;
+        for(int i =0; i <24; i++){
+            int newStep;
+            if(stepsByHour.get(i) != null){
+                if(i > 0 && stepsByHour.get(i) > 0) {
+                    newStep = stepsByHour.get(i) - maxStep;
+                    if(maxStep <= stepsByHour.get(i)){
+                        maxStep = stepsByHour.get(i);
+                    }
+                    graph_map.put(i, newStep);
                 }
-                graph_map.putAll(stepsByHour);
-                Cartesian cartesian = AnyChart.column();
-                List<DataEntry> data = new ArrayList<>();
-
-                for (Map.Entry<Integer,Integer> entry : graph_map.entrySet())
-                    data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
-
-                Column column = cartesian.column(data);
-                column.fill("#55F2B9");
-                column.stroke("#55F2B9");
-
-                column.tooltip()
-                        .titleFormat("At hour: {%X}")
-                        .format("{%Value}{groupsSeparator: } Steps")
-                        .anchor(Anchor.RIGHT_TOP);
-
-                column.tooltip()
-                        .position(Position.RIGHT_TOP)
-                        .offsetX(0d)
-                        .offsetY(10);
-
-                cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-                cartesian.interactivity().hoverMode(HoverMode.BY_X);
-                cartesian.yScale().minimum(0);
-                cartesian.yAxis(0).title("Number of Steps");
-                cartesian.xAxis(0).title("Hour");
-                cartesian.background().fill("#00000000");
-                cartesian.animation(true);
-                return cartesian;
+            }else{
+                graph_map.put(i,0);
             }
+        }
+//                graph_map.putAll(stepsByHour);
+        Cartesian cartesian = AnyChart.column();
+        List<DataEntry> data = new ArrayList<>();
+
+        for (Map.Entry<Integer,Integer> entry : graph_map.entrySet())
+            data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
+
+        Column column = cartesian.column(data);
+        column.fill("#55F2B9");
+        column.stroke("#55F2B9");
+
+        column.tooltip()
+                .titleFormat("At hour: {%X}")
+                .format("{%Value}{groupsSeparator: } Steps")
+                .anchor(Anchor.RIGHT_TOP);
+
+        column.tooltip()
+                .position(Position.RIGHT_TOP)
+                .offsetX(0d)
+                .offsetY(10);
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.interactivity().hoverMode(HoverMode.BY_X);
+        cartesian.yScale().minimum(0);
+        cartesian.yAxis(0).title("Number of Steps");
+        cartesian.xAxis(0).title("Hour");
+        cartesian.background().fill("#000000");
+        cartesian.animation(true);
+        return cartesian;
+    }
     public Cartesian createBarChart() throws ParseException {
 
-        stepsByDay = StepAppOpenHelper.loadStepsByDay(getContext());
 
         Map<String, Integer> graph_map = new TreeMap<>();
 
@@ -163,13 +201,18 @@ public class ReportFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         for(int i = 1; i <7; i ++) {
-            graph_map.put(d,0);
             c.setTime(sdf.parse(d));
             c.add (Calendar.DATE, 1);  // number of days to add
             d = sdf.format(c.getTime());
-        }
+            if(stepsByDay.containsKey(d)){
+                Log.d("Heree: "+d, String.valueOf(stepsByDay.get(d)));
+                graph_map.put(d,stepsByDay.get(d));
+            }else{
+                graph_map.put(d,0);
+            }
 
-        graph_map.putAll(stepsByDay);
+        }
+//        graph_map.putAll(stepsByDay);
 
         // 1. Create and get the cartesian coordinate system for bar chart
         Cartesian cartesian1 = AnyChart.column();
@@ -183,22 +226,21 @@ public class ReportFragment extends Fragment {
         Column column = cartesian1.column(data);
 
         column.fill("function() {" +
-                        "            if (this.value < 20)" +
-                        "                return 'yellow';" +
-                        "            return '#55F2B9';" +
-                        "        }");
+                "            if (this.value < 20)" +
+                "                return 'yellow';" +
+                "            return '#55F2B9';" +
+                "        }");
 
         column.stroke("function() {" +
-                        "            if (this.value < 20)" +
-                        "                return 'yellow';" +
-                        "            return '#55F2B9';" +
-                        "        }");
+                "            if (this.value < 20)" +
+                "                return 'yellow';" +
+                "            return '#55F2B9';" +
+                "        }");
         /*
         cartesian1.marker(data).type("function() {" +
                 "            if (this.value > 20)" +
                 "                return 'star5';" +
                 "        }");
-
         cartesian1.marker(data).fill("function() {" +
                 "            if (this.value > 20)" +
                 "                return 'yellow';" +
@@ -225,7 +267,7 @@ public class ReportFragment extends Fragment {
 
         cartesian1.yAxis(0).title("Number of Steps");
         cartesian1.xAxis(0).title("Day");
-        cartesian1.background().fill("#00000000");
+        cartesian1.background().fill("#000000");
         cartesian1.animation(true);
         return cartesian1;
     }

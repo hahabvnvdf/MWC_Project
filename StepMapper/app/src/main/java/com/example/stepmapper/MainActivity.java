@@ -20,6 +20,7 @@ import com.example.stepmapper.ui.user.SignUpFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);

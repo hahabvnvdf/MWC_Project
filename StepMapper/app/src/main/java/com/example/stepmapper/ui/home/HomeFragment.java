@@ -30,6 +30,7 @@ import java.util.TimeZone;
 
 import com.example.stepmapper.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class HomeFragment extends Fragment {
     private static int stepsCompleted;
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment {
         return stepsCompleted;
     }
 
+
     // Progress Bar variable
     public ProgressBar stepsCountProgressBar;
 
@@ -67,16 +69,20 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         // Get the number of steps stored in the current date
         Date cDate = new Date();
+
         String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
         stepsCountTextView = (TextView) root.findViewById(R.id.stepsCount);
         stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         stepsCountProgressBar.setMax(100);
 
-        stepsCompleted = FirebaseDatabaseHelper.loadSingleRecord(fDate);
+        FirebaseDatabaseHelper.loadSingleRecord(fDate);
+
         Log.d("Main", fDate);
+
         stepsCountTextView.setText(String.valueOf(stepsCompleted));
         stepsCountProgressBar.setProgress(stepsCompleted);
 
+//        FirebaseDatabaseHelper.loadSingleRecord1(fDate);
 
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensorACC = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -248,7 +254,9 @@ class StepCounterListener implements SensorEventListener {
 
         List<Integer> dataPointList = new ArrayList<Integer>();
         List<String> timePointList = new ArrayList<String>();
-        mACCStepCounter = FirebaseDatabaseHelper.loadSingleRecord(fDate);
+        FirebaseDatabaseHelper.loadSingleRecord(fDate);
+        mACCStepCounter = HomeFragment.getStepsCompleted();
+
         Log.d("Main", String.valueOf(mACCStepCounter));
         stepsCountTextView.setText(String.valueOf(mACCStepCounter));
         //update the ProgressBar
