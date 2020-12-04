@@ -54,7 +54,7 @@ public class MapFragment extends Fragment {
                 if (locationTrack.canGetLocation()) {
                     double longitude = locationTrack.getLongitude();
                     double latitude = locationTrack.getLatitude();
-                    locationText.setText("Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude));
+                    locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
 //                    if(LocationIsActive) {
 //                        mLocationButton.setText(R.string.stop_tracking);
 //                    }else{
