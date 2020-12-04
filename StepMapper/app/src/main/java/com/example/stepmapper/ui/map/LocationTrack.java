@@ -47,24 +47,10 @@ public class LocationTrack extends Service implements LocationListener {
 
     public LocationTrack(Context mContext) {
         this.mContext = mContext;
-        getLocation();
+//        getLocation();
     }
 
     private Location getLocation() {
-        if (ActivityCompat.checkSelfPermission(mContext,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) mContext, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_FINE_LOCATION_PERMISSION);
-        } else {
-            Log.d("Permission", "getFineLocation: permission granted");
-        }
-
-
-
-
-
 
         try {
             locationManager = (LocationManager) mContext
@@ -239,4 +225,3 @@ public class LocationTrack extends Service implements LocationListener {
 
 
 }
-// Base code from https://www.journaldev.com/13325/android-location-api-tracking-gps

@@ -1,6 +1,9 @@
 package com.example.stepmapper.ui.map;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +13,20 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.example.stepmapper.R;
 
 public class MapFragment extends Fragment {
-    LocationTrack locationTrack;
+
+    // Views
+    private Button mLocationButton;
+    private TextView mLocationTextView;
+    private LocationTrack locationTrack;
+    private Boolean LocationIsActive;
+
+    private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
+    private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
 
 
 
@@ -25,20 +37,30 @@ public class MapFragment extends Fragment {
             container.removeAllViews();
         }
         View root = inflater.inflate(R.layout.fragment_map, container, false);
-        final TextView textView = (TextView) root.findViewById(R.id.location_text);
 
+        final TextView locationText = (TextView) root.findViewById(R.id.location_text);
         Button btn = (Button)root.findViewById(R.id.btn);
+//        LocationIsActive  = false;
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                LocationIsActive  = !LocationIsActive;
+//                getLocation();
+                getCoarseLocation();
+                getFineLocation();
                 locationTrack = new LocationTrack(getActivity());
 
                 if (locationTrack.canGetLocation()) {
                     double longitude = locationTrack.getLongitude();
                     double latitude = locationTrack.getLatitude();
-                    Toast.makeText(getActivity(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
+                    locationText.setText("Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude));
+//                    if(LocationIsActive) {
+//                        mLocationButton.setText(R.string.stop_tracking);
+//                    }else{
+//                        mLocationButton.setText(R.string.start_tracking);
+//                    }
+
                 } else {
                     locationTrack.showSettingsAlert();
                 }
@@ -55,16 +77,54 @@ public class MapFragment extends Fragment {
         locationTrack.stopListener();
     }
 
-//    private void getLocation() {
-//        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]
-//                            {Manifest.permission.ACCESS_FINE_LOCATION},
-//                    REQUEST_FINE_LOCATION_PERMISSION);
-//        } else {
-//            return;        }
-//    }
+    private void getFineLocation() {
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION_PERMISSION);
+        } else {
+            Log.d("Fine Position", "Permission denied");
+            return;
+        }
+    }
+    private void getCoarseLocation() {
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]
+                            {Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_COARSE_LOCATION_PERMISSION);
+        } else {
+            Log.d("Coarse Position", "Permission denied");
+            return;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_COARSE_LOCATION_PERMISSION) {
+            if(grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCoarseLocation();
+            } else {
+                Toast.makeText(getActivity(),
+                        R.string.step_permission_denied,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == REQUEST_FINE_LOCATION_PERMISSION) {
+            if(grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getFineLocation();
+            } else {
+                Toast.makeText(getActivity(),
+                        R.string.step_permission_denied,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }
-// Base code from https://www.journaldev.com/13325/android-location-api-tracking-gps

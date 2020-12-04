@@ -216,38 +216,6 @@ public class MainActivity extends AppCompatActivity  {
         } else {
             return;        }
     }
-//    // Ask for permission
-//    private void getCoarseLocation() {
-//        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-//                Manifest.permission.ACCESS_COARSE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]
-//                            {Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    REQUEST_COARSE_LOCATION_PERMISSION);
-//        } else {
-//            return;        }
-//    }
-//    private void getFineLocation() {
-//        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]
-//                            {Manifest.permission.ACCESS_FINE_LOCATION},
-//                    REQUEST_FINE_LOCATION_PERMISSION);
-//        } else {
-//            return;        }
-//    }
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_FINE_LOCATION_PERMISSION);
-        } else {
-            return;        }
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -256,26 +224,6 @@ public class MainActivity extends AppCompatActivity  {
             if(grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getActivity();
-            } else {
-                Toast.makeText(this,
-                        R.string.step_permission_denied,
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-//        if (requestCode == REQUEST_COARSE_LOCATION_PERMISSION) {
-//            if(grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                getCoarseLocation();
-//            } else {
-//                Toast.makeText(this,
-//                        R.string.step_permission_denied,
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        }
-        if (requestCode == REQUEST_FINE_LOCATION_PERMISSION) {
-            if(grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation();
             } else {
                 Toast.makeText(this,
                         R.string.step_permission_denied,
