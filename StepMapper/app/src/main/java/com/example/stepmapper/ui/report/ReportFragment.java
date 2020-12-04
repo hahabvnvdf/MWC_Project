@@ -90,22 +90,6 @@ public class ReportFragment extends Fragment {
     public static Map<String, Integer> stepsByDay = new HashMap<>();
 
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-
-        super.setUserVisibleHint(isVisibleToUser);
-
-        // Refresh tab data:
-
-        if (getFragmentManager() != null) {
-
-            getFragmentManager()
-                    .beginTransaction()
-                    .detach(this)
-                    .attach(this)
-                    .commit();
-        }
-    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         if (container != null) {
