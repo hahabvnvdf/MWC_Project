@@ -97,19 +97,17 @@ public class ReportFragment extends Fragment {
         }
         final View root = inflater.inflate(R.layout.fragment_report, container, false);
         FirebaseDatabaseHelper.loadStepsByDay();
+        //set hourly chart as default when report fragment is loaded
         FirebaseDatabaseHelper.loadStepsByHour(current_time);
         anyChartView1 = root.findViewById(R.id.dayBarChart);
         anyChartView = root.findViewById(R.id.hourBarChart);
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
-        Toast.makeText(getContext(), "Hourly button clicked", Toast.LENGTH_SHORT).show();
         anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
         Cartesian cartesian = null;
-
         cartesian = createColumnChart();
-
-        anyChartView.setBackgroundColor("#00000000");
         anyChartView.setChart(cartesian);
         anyChartView1.setVisibility(View.GONE);
+        anyChartView.setBackgroundColor("#00000000");
         anyChartView.setVisibility(View.VISIBLE);
 
 
@@ -119,12 +117,10 @@ public class ReportFragment extends Fragment {
                 APIlib.getInstance().setActiveAnyChartView(anyChartView);
                 anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
                 Cartesian cartesian = null;
-
                 cartesian = createColumnChart();
-
-                anyChartView.setBackgroundColor("#00000000");
                 anyChartView.setChart(cartesian);
                 anyChartView1.setVisibility(View.GONE);
+                anyChartView.setBackgroundColor("#00000000");
                 anyChartView.setVisibility(View.VISIBLE);
             }
         });
@@ -141,24 +137,18 @@ public class ReportFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                anyChartView1.setBackgroundColor("#00000000");
                 anyChartView1.setChart(cartesian);
                 anyChartView.setVisibility(View.GONE);
+                anyChartView1.setBackgroundColor("#00000000");
                 anyChartView1.setVisibility(View.VISIBLE);
-
             }
 
         });
-
-//
-
-
 
         return root;
     }
 
     public Cartesian createColumnChart(){
-
 
         Map<Integer, Integer> graph_map = new TreeMap<>();
         int maxStep = 0;
@@ -176,7 +166,7 @@ public class ReportFragment extends Fragment {
                 graph_map.put(i,0);
             }
         }
-//                graph_map.putAll(stepsByHour);
+
         Cartesian cartesian = AnyChart.column();
         List<DataEntry> data = new ArrayList<>();
 
@@ -202,13 +192,12 @@ public class ReportFragment extends Fragment {
         cartesian.yScale().minimum(0);
         cartesian.yAxis(0).title("Number of Steps");
         cartesian.xAxis(0).title("Hour");
-        cartesian.background().fill("#000000");
+        cartesian.background().fill("#00000000");
         cartesian.animation(true);
         return cartesian;
     }
+
     public Cartesian createBarChart() throws ParseException {
-
-
         Map<String, Integer> graph_map = new TreeMap<>();
 
         Date startDate = new Date(cDate.getTime() - 518400000L);
@@ -225,10 +214,7 @@ public class ReportFragment extends Fragment {
             }else{
                 graph_map.put(d,0);
             }
-
         }
-//        graph_map.putAll(stepsByDay);
-
         // 1. Create and get the cartesian coordinate system for bar chart
         Cartesian cartesian1 = AnyChart.column();
 
@@ -241,26 +227,17 @@ public class ReportFragment extends Fragment {
         Column column = cartesian1.column(data);
 
         column.fill("function() {" +
-                "            if (this.value < 20)" +
+                "            if (this.value < 100)" +
                 "                return 'yellow';" +
                 "            return '#55F2B9';" +
                 "        }");
 
         column.stroke("function() {" +
-                "            if (this.value < 20)" +
+                "            if (this.value < 100)" +
                 "                return 'yellow';" +
                 "            return '#55F2B9';" +
                 "        }");
-        /*
-        cartesian1.marker(data).type("function() {" +
-                "            if (this.value > 20)" +
-                "                return 'star5';" +
-                "        }");
-        cartesian1.marker(data).fill("function() {" +
-                "            if (this.value > 20)" +
-                "                return 'yellow';" +
-                "        }");
-        */
+
         column.tooltip()
                 .titleFormat("At day: {%X}")
                 .format("{%Value}{groupsSeparator: } Steps")
@@ -278,11 +255,9 @@ public class ReportFragment extends Fragment {
         cartesian1.tooltip().positionMode(TooltipPositionMode.POINT);
         cartesian1.interactivity().hoverMode(HoverMode.BY_X);
         cartesian1.yScale().minimum(0);
-
-
         cartesian1.yAxis(0).title("Number of Steps");
         cartesian1.xAxis(0).title("Day");
-        cartesian1.background().fill("#000000");
+        cartesian1.background().fill("#00000000");
         cartesian1.animation(true);
         return cartesian1;
     }
