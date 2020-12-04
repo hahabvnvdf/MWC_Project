@@ -51,10 +51,20 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ReportFragment extends Fragment {
-    private static boolean stepsByHourCheck = false;
+
     public Context context;
     AnyChartView anyChartView;
     AnyChartView anyChartView1;
+
+    public static boolean isStepsByHourCheck() {
+        return stepsByHourCheck;
+    }
+
+    public static void setStepsByHourCheck() {
+        ReportFragment.stepsByHourCheck = true;
+    }
+
+    private static boolean stepsByHourCheck = false;
 
     Date cDate = new Date();
     String current_time = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
@@ -106,7 +116,10 @@ public class ReportFragment extends Fragment {
             public void onClick(View v1) {
                 APIlib.getInstance().setActiveAnyChartView(anyChartView);
                 anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
-                Cartesian cartesian = createColumnChart();
+                Cartesian cartesian = null;
+
+                cartesian = createColumnChart();
+
                 anyChartView.setBackgroundColor("#00000000");
                 anyChartView.setChart(cartesian);
                 anyChartView1.setVisibility(View.GONE);

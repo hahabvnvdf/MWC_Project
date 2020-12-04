@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity  {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity  {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                HomeFragment.stepsCompleted = 0;
+                HomeFragment.setStepsCompleted(0);
                 firebaseAuth.signOut();
                 Intent intent = new Intent(MainActivity.this, LoginFragment.class);
                 startActivity(intent);

@@ -153,6 +153,7 @@ public class FirebaseDatabaseHelper{
                     Map<String, Integer> stepsByDay = new HashMap<>();
                     stepsByDay.put(date, steps);
                     ReportFragment.setStepsByDay(stepsByDay);
+                    ReportFragment.setStepsByHourCheck();
                 }else{
                     count+=1;
                 }
