@@ -1,5 +1,6 @@
 package com.example.stepmapper.ui.map;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -25,6 +26,9 @@ import com.example.stepmapper.MainActivity;
 public class LocationTrack extends Service implements LocationListener {
     private final Context mContext;
 
+    private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
+    private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
+
     boolean checkGPS = false;
     boolean checkNetwork = false;
     boolean canGetLocation = false;
@@ -47,7 +51,21 @@ public class LocationTrack extends Service implements LocationListener {
     }
 
     private Location getLocation() {
-/*
+        if (ActivityCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) mContext, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION_PERMISSION);
+        } else {
+            Log.d("Permission", "getFineLocation: permission granted");
+        }
+
+
+
+
+
+
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(Context.LOCATION_SERVICE);
@@ -122,7 +140,7 @@ public class LocationTrack extends Service implements LocationListener {
                         longitude = loc.getLongitude();
                     }
                 }*/
-/*
+
             }
 
 
@@ -130,8 +148,7 @@ public class LocationTrack extends Service implements LocationListener {
             e.printStackTrace();
         }
 
-        return loc;*/
-        return null;
+        return loc;
     }
 
     public double getLongitude() {
@@ -219,8 +236,6 @@ public class LocationTrack extends Service implements LocationListener {
     public void onProviderDisabled(String s) {
         Log.d("Latitude","disable");
     }
-
-
 
 
 }

@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:id="@+id/text_map"
+        android:id="@+id/location_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="GET LOCATION"
-        app:layout_constraintBottom_toTopOf="@+id/text_map"
+        app:layout_constraintBottom_toTopOf="@+id/location_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

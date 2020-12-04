@@ -17,6 +17,7 @@ public class MapFragment extends Fragment {
     LocationTrack locationTrack;
 
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -24,25 +25,25 @@ public class MapFragment extends Fragment {
             container.removeAllViews();
         }
         View root = inflater.inflate(R.layout.fragment_map, container, false);
-        final TextView textView = (TextView) root.findViewById(R.id.text_map);
+        final TextView textView = (TextView) root.findViewById(R.id.location_text);
 
         Button btn = (Button)root.findViewById(R.id.btn);
 
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                locationTrack = new LocationTrack(getActivity());
-//
-//                if (locationTrack.canGetLocation()) {
-//                    double longitude = locationTrack.getLongitude();
-//                    double latitude = locationTrack.getLatitude();
-//                    Toast.makeText(getActivity(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
-//                } else {
-//                    locationTrack.showSettingsAlert();
-//                }
-//            }
-//        });
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                locationTrack = new LocationTrack(getActivity());
+
+                if (locationTrack.canGetLocation()) {
+                    double longitude = locationTrack.getLongitude();
+                    double latitude = locationTrack.getLatitude();
+                    Toast.makeText(getActivity(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
+                } else {
+                    locationTrack.showSettingsAlert();
+                }
+            }
+        });
 
 
         return root;
@@ -53,6 +54,17 @@ public class MapFragment extends Fragment {
         super.onDestroy();
         locationTrack.stopListener();
     }
+
+//    private void getLocation() {
+//        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]
+//                            {Manifest.permission.ACCESS_FINE_LOCATION},
+//                    REQUEST_FINE_LOCATION_PERMISSION);
+//        } else {
+//            return;        }
+//    }
 
 }
 // Base code from https://www.journaldev.com/13325/android-location-api-tracking-gps

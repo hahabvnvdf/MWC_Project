@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "934739389008-ekesfvd1cte7i0nmnd6fbjsb4uf8ib73.apps.googleusercontent.com",
+          "client_id": "934739389008-u4m1kce90ll359d1dlpm18hi712u5bjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.stepmapper",
+            "certificate_hash": "ae3029de06c96475419b09a3a03d943bac8ed01d"
+          }
+        },
+        {
+          "client_id": "934739389008-itgvl2fjgnk25ge6mdoqgma38h0gjhht.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.stepmapper",
