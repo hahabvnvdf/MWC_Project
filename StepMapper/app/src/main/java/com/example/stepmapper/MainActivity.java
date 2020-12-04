@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 HomeFragment.setStepsCompleted(0);
+                ReportFragment.stepsByHour.clear();
+                ReportFragment.stepsByDay.clear();
                 firebaseAuth.signOut();
                 Intent intent = new Intent(MainActivity.this, LoginFragment.class);
                 startActivity(intent);

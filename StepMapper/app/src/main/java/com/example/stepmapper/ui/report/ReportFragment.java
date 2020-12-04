@@ -103,8 +103,10 @@ public class ReportFragment extends Fragment {
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
         Toast.makeText(getContext(), "Hourly button clicked", Toast.LENGTH_SHORT).show();
         anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
+        Cartesian cartesian = null;
 
-        Cartesian cartesian = createColumnChart();
+        cartesian = createColumnChart();
+
         anyChartView.setBackgroundColor("#00000000");
         anyChartView.setChart(cartesian);
         anyChartView1.setVisibility(View.GONE);
