@@ -50,6 +50,7 @@ public class MapFragment extends Fragment {
                 getCoarseLocation();
                 getFineLocation();
                 locationTrack = new LocationTrack(getActivity());
+                locationTrack.setTextViewToModify(locationText);
 
                 if (locationTrack.canGetLocation()) {
                     double longitude = locationTrack.getLongitude();

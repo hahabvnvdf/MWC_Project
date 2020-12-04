@@ -18,16 +18,19 @@ import android.app.Service;
 import android.util.Log;
 
 
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stepmapper.MainActivity;
+import com.example.stepmapper.R;
 
 
 public class LocationTrack extends Service implements LocationListener {
     private final Context mContext;
 
-    private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
-    private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
+//    private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
+//    private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
 
     boolean checkGPS = false;
     boolean checkNetwork = false;
@@ -36,6 +39,7 @@ public class LocationTrack extends Service implements LocationListener {
     Location loc;
     double latitude;
     double longitude;
+    TextView locationText;
 
 
     // TODO: meaningful distance updates
@@ -194,6 +198,9 @@ public class LocationTrack extends Service implements LocationListener {
         }
     }
 
+    public void setTextViewToModify(TextView tv) {
+        this.locationText = tv;
+    }
 
 
     @Override
@@ -203,7 +210,15 @@ public class LocationTrack extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
+//        latitude = 0.0;
+//        longitude = 0.0;
+//        if (location != null) {
+//            this.latitude = location.getLatitude();
+//            this.longitude = location.getLongitude();
+//        }
+//        View view = inflater.inflate(R.layout.activity_main, null);
+//        final TextView locationText = (TextView) findViewById(R.id.location_text);
+        locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
     }
 
     @Override
