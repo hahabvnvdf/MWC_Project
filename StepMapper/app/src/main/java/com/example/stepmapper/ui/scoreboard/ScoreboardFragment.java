@@ -24,7 +24,6 @@ public class ScoreboardFragment extends Fragment {
             container.removeAllViews();
         }
         View root = inflater.inflate(R.layout.fragment_scoreboard, container, false);
-        final TextView textView = root.findViewById(R.id.text_scoreboard);
 
         return root;
     }

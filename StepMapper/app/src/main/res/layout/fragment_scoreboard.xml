@@ -6,17 +6,89 @@
     android:layout_height="match_parent"
     tools:context=".ui.scoreboard.ScoreboardFragment">
 
-    <TextView
-        android:id="@+id/text_scoreboard"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_addFriend"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:text="Add Friend"
+        android:background="@drawable/roundcorner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.909"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.124" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.075"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.124">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="225dp"
+            android:layout_height="50dp"
+            android:hint="Enter Friend name here"
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="80dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="400dp"
+        android:layout_height="550dp"
+        tools:layout_editor_absoluteX="3dp"
+        tools:layout_editor_absoluteY="176dp">
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/txt_Friend"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:text="Friends" />
+            <TextView
+                android:id="@+id/txt_Friend_sc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Score" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/txt_Friend1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Friend1" />
+                <TextView
+                    android:id="@+id/txt_Friend1_sc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="45" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </TableLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

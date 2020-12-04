@@ -38,7 +38,6 @@ public class HomeFragment extends Fragment {
     MaterialButtonToggleGroup materialButtonToggleGroup;
 
     private FirebaseAuth firebaseAuth;
-//    private FirebaseUser user = firebaseAuth.getCurrentUser();
     // Text view variables
     public TextView stepsCountTextView;
 
@@ -54,17 +53,14 @@ public class HomeFragment extends Fragment {
         return stepsCompleted;
     }
 
-
     // Progress Bar variable
     public ProgressBar stepsCountProgressBar;
 
     //Progress Count
     private int progressCount;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         // Get the number of steps stored in the current date
@@ -82,24 +78,16 @@ public class HomeFragment extends Fragment {
         stepsCountTextView.setText(String.valueOf(stepsCompleted));
         stepsCountProgressBar.setProgress(stepsCompleted);
 
-//        FirebaseDatabaseHelper.loadSingleRecord1(fDate);
-
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mSensorACC = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
-
         // instantiate the StepCounterListener
         listener = new StepCounterListener(stepsCountTextView, stepsCountProgressBar, fDate);
-        // Toggle group button
-
-        //Place code related to Start button
-        Toast.makeText(getContext(), "START", Toast.LENGTH_SHORT).show();
 
         // Check if the Accelerometer sensor exists
         if(mSensorACC != null){
             //register the ACC listener
             mSensorManager.registerListener(listener, mSensorACC, SensorManager.SENSOR_DELAY_NORMAL);
-
         }
         else{
             Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
@@ -123,21 +111,13 @@ public class HomeFragment extends Fragment {
                         Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
                     }
 
-
                 } else if (group.getCheckedButtonId() == R.id.toggleStop) {
-                    //Place code related to Stop button
                     Toast.makeText(getContext(), "STOP", Toast.LENGTH_SHORT).show();
-
-                    // Unregister the listener
                     mSensorManager.unregisterListener(listener);
                 }
             }
         });
-        //////////////////////////////////////
-
         return root;
-
-
     }
     @Override
     public void onDestroyView (){
@@ -159,10 +139,6 @@ class StepCounterListener implements SensorEventListener {
     private int lastXPoint = 1;
     int stepThreshold = 6;
 
-    // Android step detector
-    int mAndroidStepCount = 0;
-    int progressCount;
-
     // TextView
     TextView stepsCountTextView;
     ProgressBar stepsCountProgressBar;
@@ -173,14 +149,11 @@ class StepCounterListener implements SensorEventListener {
     public String hour;
     public String fDate;
 
-
-
     public StepCounterListener(TextView tv, ProgressBar pb, String date){
         stepsCountTextView = tv;
         stepsCountProgressBar = pb;
         fDate = date;
     }
-
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -203,8 +176,6 @@ class StepCounterListener implements SensorEventListener {
                 jdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
                 String date = jdf.format(timeInMillis);
 
-
-
                 // Get the date, the day and the hour
                 timestamp = date;
                 day = date.substring(0,10);
@@ -213,24 +184,16 @@ class StepCounterListener implements SensorEventListener {
                 accMag = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
                 mACCSeries.add((int) accMag);
                 mTimeSeries.add(timestamp);
-
                 peakDetection();
-                if(mACCStepCounter==118)
-                {
-
-                }
                 break;
 
         }
     }
 
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
-
 
 
     private void peakDetection() {
@@ -276,23 +239,12 @@ class StepCounterListener implements SensorEventListener {
 
                 if (forwardSlope < 0 && downwardSlope > 0 && dataPointList.get(i) > stepThreshold ) {
                     mACCStepCounter += 1;
-
-                    Log.d("ACC STEPS: ", String.valueOf(mACCStepCounter));
-
                     //update the text view
                     stepsCountTextView.setText(String.valueOf(mACCStepCounter));
                     //update the ProgressBar
                     stepsCountProgressBar.setProgress(mACCStepCounter);
-
+                    //insert the steps in firebase
                     FirebaseDatabaseHelper.insertData(day, hour, timePointList.get(i), mACCStepCounter);
-
-//                    //Insert the data in the database
-//                    ContentValues values = new ContentValues();
-//                    values.put(StepAppOpenHelper.KEY_TIMESTAMP, timePointList.get(i));
-//                    values.put(StepAppOpenHelper.KEY_DAY, day);
-//                    values.put(StepAppOpenHelper.KEY_HOUR, hour);
-//                    database.insert(StepAppOpenHelper.TABLE_NAME, null, values);
-
                 }
             }
         }
