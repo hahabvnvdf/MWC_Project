@@ -34,6 +34,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity  {
 
 
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity  {
             android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
     private FirebaseAuth firebaseAuth;
     private String Username = null;
+    Date cDate = new Date();
+    String current_time = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
 
 //    @Override
 //    public void onStart() {
@@ -121,6 +126,8 @@ public class MainActivity extends AppCompatActivity  {
             signin.setVisibility(View.GONE);
             username.setVisibility(View.VISIBLE);
             username.setText(user.getEmail());
+            FirebaseDatabaseHelper.loadStepsByHour(current_time);
+            FirebaseDatabaseHelper.loadStepsByDay();
         }else if(firebaseAuth.getCurrentUser() == null){
             logout.setVisibility(View.GONE);
             signin.setVisibility(View.VISIBLE);
