@@ -26,6 +26,7 @@ public class MapFragment extends Fragment {
     private TextView locationText;
     private LocationTrack locationTrack;
     private Boolean LocationIsActive;
+    private Thread th;
 
     private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
@@ -43,32 +44,41 @@ public class MapFragment extends Fragment {
         locationText = (TextView) root.findViewById(R.id.location_text);
         Button btn = (Button)root.findViewById(R.id.btn);
         LocationIsActive  = false;
+        btn.setText(getString(R.string.start_tracking));
 
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Button btn = (Button)getActivity().findViewById(R.id.btn);
                 LocationIsActive  = !LocationIsActive;
-//                getLocation();
-                getCoarseLocation();
-                getFineLocation();
-                locationTrack = new LocationTrack(getActivity());
-                locationTrack.setTextViewToModify(locationText);
+                if (LocationIsActive){
+                    btn.setText(getString(R.string.stop_tracking));
+    //                getLocation();
+                    getCoarseLocation();
+                    getFineLocation();
+                    locationTrack = new LocationTrack(getActivity());
+                    locationTrack.setTextViewToModify(locationText);
 
-                if (locationTrack.canGetLocation()) {
-//                    double longitude = locationTrack.getLongitude();
-//                    double latitude = locationTrack.getLatitude();
-//                    locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
-                    startTimerThread();
+                    if (locationTrack.canGetLocation()) {
+    //                    double longitude = locationTrack.getLongitude();
+    //                    double latitude = locationTrack.getLatitude();
+    //                    locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
+                        startTimerThread();
 
-//                    if(LocationIsActive) {
-//                        mLocationButton.setText(R.string.stop_tracking);
-//                    }else{
-//                        mLocationButton.setText(R.string.start_tracking);
-//                    }
+    //                    if(LocationIsActive) {
+    //                        mLocationButton.setText(R.string.stop_tracking);
+    //                    }else{
+    //                        mLocationButton.setText(R.string.start_tracking);
+    //                    }
 
-                } else {
-                    locationTrack.showSettingsAlert();
+                    } else {
+                        locationTrack.showSettingsAlert();
+                    }
+
+                } else{
+                    if(th.isAlive()) th.interrupt();
+                    btn.setText(getString(R.string.start_tracking));
                 }
             }
 
@@ -91,10 +101,10 @@ public class MapFragment extends Fragment {
 
 
     private void startTimerThread() {
-        Thread th = new Thread(new Runnable() {
+        th = new Thread(new Runnable() {
             public void run() {
                 Log.d("LOCTIME", "updating");
-                while (locationTrack.canGetLocation()) {
+                while (LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

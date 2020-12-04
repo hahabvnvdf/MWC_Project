@@ -18,8 +18,8 @@
     <string name="start">Start</string>
     <string name="toggle_stop">stop</string>
     <string name="toggle_start">start</string>
-    <string name="start_tracking">start tracking</string>
-    <string name="stop_tracking">stop tracking</string>
+    <string name="start_tracking">Start tracking</string>
+    <string name="stop_tracking">Stop tracking</string>
     <string name="latitude">0.0</string>
     <string name="longitude">0.0</string>
     <string name="location_text">"Latitude: 0.0\nLongitude: 0.0"</string>
