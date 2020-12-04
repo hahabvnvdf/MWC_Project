@@ -22,7 +22,7 @@
     <string name="stop_tracking">stop tracking</string>
     <string name="latitude">0.0</string>
     <string name="longitude">0.0</string>
-    <string name="location_text">"Latitude: 0.0\n Longitude: 0.0\n"</string>
+    <string name="location_text">"Latitude: 0.0\nLongitude: 0.0"</string>
     <string name="step_permission_denied">permission denied</string>
     <string name="acc_not_available">ACC not available</string>
     <string name="step_not_available">step detector not available</string>

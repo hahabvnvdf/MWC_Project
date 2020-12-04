@@ -210,8 +210,11 @@ public class LocationTrack extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("onLocationChanged","start");
+
         if (location != null) {
             loc=location;
+            Log.d("onLocationChanged","update"+location);
         }
 //        View view = inflater.inflate(R.layout.activity_main, null);
 //        final TextView locationText = (TextView) findViewById(R.id.location_text);
