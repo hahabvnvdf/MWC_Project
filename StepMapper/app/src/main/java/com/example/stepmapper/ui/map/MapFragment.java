@@ -3,6 +3,7 @@ package com.example.stepmapper.ui.map;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +22,14 @@ public class MapFragment extends Fragment {
 
     // Views
     private Button mLocationButton;
-    private TextView mLocationTextView;
+    private TextView locationText;
     private LocationTrack locationTrack;
     private Boolean LocationIsActive;
 
     private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
 
-
+    private Handler handler;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,9 +39,12 @@ public class MapFragment extends Fragment {
         }
         View root = inflater.inflate(R.layout.fragment_map, container, false);
 
-        final TextView locationText = (TextView) root.findViewById(R.id.location_text);
+        locationText = (TextView) root.findViewById(R.id.location_text);
         Button btn = (Button)root.findViewById(R.id.btn);
 //        LocationIsActive  = false;
+
+        handler = new Handler();
+
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,9 +57,12 @@ public class MapFragment extends Fragment {
                 locationTrack.setTextViewToModify(locationText);
 
                 if (locationTrack.canGetLocation()) {
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-                    locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
+//                    double longitude = locationTrack.getLongitude();
+//                    double latitude = locationTrack.getLatitude();
+//                    locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
+                    startCounting();
+
+
 //                    if(LocationIsActive) {
 //                        mLocationButton.setText(R.string.stop_tracking);
 //                    }else{
@@ -66,7 +73,12 @@ public class MapFragment extends Fragment {
                     locationTrack.showSettingsAlert();
                 }
             }
+
+
         });
+
+
+
 
 
         return root;
@@ -77,6 +89,24 @@ public class MapFragment extends Fragment {
         super.onDestroy();
         locationTrack.stopListener();
     }
+
+    private void startCounting() {
+        handler.post(run);
+    }
+    private Runnable run = new Runnable() {
+        @Override
+        public void run() {
+//                number++;
+//                tvFragment.setText(number);
+            double longitude = locationTrack.getLongitude();
+            double latitude = locationTrack.getLatitude();
+            locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
+
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+
 
     private void getFineLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(),
