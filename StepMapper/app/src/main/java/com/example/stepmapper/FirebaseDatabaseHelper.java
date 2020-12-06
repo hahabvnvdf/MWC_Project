@@ -7,7 +7,9 @@ import androidx.annotation.Nullable;
 
 import com.example.stepmapper.ui.home.HomeFragment;
 import com.example.stepmapper.ui.report.ReportFragment;
+import com.example.stepmapper.ui.scoreboard.ScoreboardFragment;
 import com.example.stepmapper.ui.user.UserData;
+import com.example.stepmapper.ui.user.UserID;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -43,7 +45,6 @@ public class FirebaseDatabaseHelper{
             mDatabaseReference.child(day).child(hour).setValue(userData);
         }
     }
-
     private static void getSingleRecord(DataSnapshot dataSnapshot) {
         numSteps = 0;
         for (DataSnapshot child: dataSnapshot.getChildren()) {
@@ -139,8 +140,6 @@ public class FirebaseDatabaseHelper{
     }
 
     private static void getStepsByDay(DataSnapshot dataSnapshot){
-        Log.d("Here", dataSnapshot.getKey());
-//        Log.d("Here", String.valueOf(dataSnapshot.getChildrenCount()));
         String date = dataSnapshot.getKey();
         Integer steps = 0;
         int count = 0;
@@ -192,6 +191,90 @@ public class FirebaseDatabaseHelper{
                 }
             });
         }
+    }
+
+    public static void addFriendFromEmail(String newEmail, String oriEmail, String uid){
+        if (firebaseAuth.getCurrentUser() != null) {
+            String user = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserID").child(user).child("Friends").child(oriEmail);
+            UserID userID = new UserID();
+            userID.setUID(uid);
+            mDatabaseReference.setValue(userID);
+        }
+
+    }
+
+    public static void getAllFriends(final String date) {
+        if (firebaseAuth.getCurrentUser() != null) {
+            String user = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserID").child(user).child("Friends");
+            mDatabaseReference.orderByKey().addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    getFriendData(snapshot, date);
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    private static void getFriendData(final DataSnapshot snapshot, final String date) {
+        final String username = snapshot.getKey();
+        String uid =snapshot.child("uid").getValue().toString();
+        final DatabaseReference mDatabaseReference2 = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +uid).child(date);
+        Map<String, String> friendData = new HashMap<>();
+        friendData.put(username, "0");
+        ScoreboardFragment.setScoreBoard(friendData);
+//        Log.d("Emaill", mDatabaseReference2.);
+        mDatabaseReference2.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                Log.d("Emaill", snapshot.child("stepCount").getValue().toString());
+                Map<String, String> friendData = new HashMap<>();
+                friendData.put(username, snapshot.child("stepCount").getValue().toString());
+                ScoreboardFragment.setScoreBoard(friendData);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
 }

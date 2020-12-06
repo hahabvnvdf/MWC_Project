@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity  {
                 HomeFragment.setStepsCompleted(0);
                 ReportFragment.stepsByHour.clear();
                 ReportFragment.stepsByDay.clear();
+                ScoreboardFragment.clearScoreBoard();
                 firebaseAuth.signOut();
                 Intent intent = new Intent(MainActivity.this, LoginFragment.class);
                 startActivity(intent);
@@ -126,8 +128,10 @@ public class MainActivity extends AppCompatActivity  {
             signin.setVisibility(View.GONE);
             username.setVisibility(View.VISIBLE);
             username.setText(user.getEmail());
+            FirebaseDatabaseHelper.loadSingleRecord(current_time);
             FirebaseDatabaseHelper.loadStepsByHour(current_time);
             FirebaseDatabaseHelper.loadStepsByDay();
+            FirebaseDatabaseHelper.getAllFriends(current_time);
         }else if(firebaseAuth.getCurrentUser() == null){
             logout.setVisibility(View.GONE);
             signin.setVisibility(View.VISIBLE);

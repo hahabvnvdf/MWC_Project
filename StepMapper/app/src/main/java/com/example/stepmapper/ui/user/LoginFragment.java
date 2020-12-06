@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.stepmapper.FirebaseDatabaseHelper;
 import com.example.stepmapper.MainActivity;
 import com.example.stepmapper.R;
 import com.example.stepmapper.ui.home.HomeFragment;
@@ -40,6 +41,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginFragment extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123 ;
@@ -49,11 +52,17 @@ public class LoginFragment extends AppCompatActivity {
     private TextView signUpTv;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
+    private DatabaseReference mDatabaseReference;
+    private UserID userID = new UserID();
 
     @Override
     protected void onStart() {
         super.onStart();
         if(firebaseAuth.getCurrentUser() != null){
+            String username = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserID").child(username).child("Self Info");
+            userID.setUID(firebaseAuth.getCurrentUser().getUid());
+            mDatabaseReference.setValue(userID);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }
@@ -126,6 +135,11 @@ public class LoginFragment extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(LoginFragment.this, "Successfull Login", Toast.LENGTH_LONG).show();
+                    String username = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+//            Log.d("User", username);
+                    mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserID").child(username).child("Self Info");
+                    userID.setUID(firebaseAuth.getCurrentUser().getUid());
+                    mDatabaseReference.setValue(userID);
                     Intent intent = new Intent(LoginFragment.this, MainActivity.class);
                     startActivity(intent);
                     finish();
