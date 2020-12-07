@@ -1,9 +1,11 @@
 package com.example.stepmapper;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +40,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity  {
-
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -134,8 +135,6 @@ public class MainActivity extends AppCompatActivity  {
             username.setVisibility(View.INVISIBLE);
         }
 //        navigationView.getMenu().findItem(R.id.loginName).setVisible(true);
-
-
 
     }
 
