@@ -174,8 +174,8 @@ public class ReportFragment extends Fragment {
             data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
 
         Column column = cartesian.column(data);
-        column.fill("#55F2B9");
-        column.stroke("#55F2B9");
+        column.fill("#236AB9");
+        column.stroke("#236AB9");
 
         column.tooltip()
                 .titleFormat("At hour: {%X}")
@@ -228,14 +228,14 @@ public class ReportFragment extends Fragment {
 
         column.fill("function() {" +
                 "            if (this.value < 100)" +
-                "                return 'yellow';" +
-                "            return '#55F2B9';" +
+                "                return '#609CE1';" +
+                "            return '#236AB9';" +
                 "        }");
 
         column.stroke("function() {" +
                 "            if (this.value < 100)" +
-                "                return 'yellow';" +
-                "            return '#55F2B9';" +
+                "                return '#609CE1';" +
+                "            return '#236AB9';" +
                 "        }");
 
         column.tooltip()
