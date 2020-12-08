@@ -168,7 +168,7 @@ public class ScoreboardFragment extends Fragment {
                             TableRow.LayoutParams.WRAP_CONTENT));
 
                     TextView tv2 = new TextView(getActivity());
-                    tv2.setText(k);
+                    tv2.setText(k.split("@")[0]);
                     TextView tv3 = new TextView(getActivity());
                     tv3.setText(v);
                     tr_head1.addView(tv2);

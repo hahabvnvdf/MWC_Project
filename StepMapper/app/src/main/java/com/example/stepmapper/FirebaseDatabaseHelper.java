@@ -238,7 +238,7 @@ public class FirebaseDatabaseHelper{
     }
 
     private static void getFriendData(final DataSnapshot snapshot, final String date) {
-        final String username = snapshot.getKey().split("@")[0];
+        final String username = snapshot.getKey();
 
         String uid =snapshot.child("uid").getValue().toString();
         final DatabaseReference mDatabaseReference2 = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +uid).child(date);

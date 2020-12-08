@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/white"
+    android:background="@color/background"
     tools:openDrawer="start">
     <!-- This LinearLayout represents the contents of the screen  -->
 
@@ -28,7 +28,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        android:background="@color/white"
+        android:background="@color/background"
         app:menu="@menu/activity_main_drawer" />
 
 

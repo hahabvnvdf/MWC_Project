@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background"
     tools:context=".ui.home.HomeFragment">
 
 
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/toggle_start"
-            android:textColor="@color/white"
+            android:textColor="@color/background"
             app:icon="@drawable/ic_start" />
 
         <com.google.android.material.button.MaterialButton
@@ -107,7 +107,7 @@
             android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/background"
             android:text="@string/toggle_stop" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
