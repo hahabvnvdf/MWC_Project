@@ -61,17 +61,7 @@ public class MapFragment extends Fragment {
                     locationTrack.setTextViewToModify(locationText);
 
                     if (locationTrack.canGetLocation()) {
-    //                    double longitude = locationTrack.getLongitude();
-    //                    double latitude = locationTrack.getLatitude();
-    //                    locationText.setText("Longitude: " + Double.toString(longitude) + "\nLatitude: " + Double.toString(latitude));
                         startTimerThread();
-
-    //                    if(LocationIsActive) {
-    //                        mLocationButton.setText(R.string.stop_tracking);
-    //                    }else{
-    //                        mLocationButton.setText(R.string.start_tracking);
-    //                    }
-
                     } else {
                         locationTrack.showSettingsAlert();
                     }
@@ -85,10 +75,6 @@ public class MapFragment extends Fragment {
 
         });
 
-
-
-
-
         return root;
     }
 
@@ -96,6 +82,11 @@ public class MapFragment extends Fragment {
     public void onDestroy() {
         locationTrack.stopListener();
         super.onDestroy();
+    }
+    @Override
+    public void onDestroyView (){
+        super.onDestroyView();
+        locationTrack.stopListener();
     }
 
 
@@ -126,9 +117,6 @@ public class MapFragment extends Fragment {
         });
         th.start();
     }
-
-
-
 
 
     private void getFineLocation() {
