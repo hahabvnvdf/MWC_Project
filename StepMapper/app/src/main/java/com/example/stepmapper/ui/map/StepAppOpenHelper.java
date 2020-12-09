@@ -4,9 +4,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.icu.text.Transliterator;
+import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +20,7 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
 
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "stepapp";
+    private static final String DATABASE_NAME = "stepapp_loc";
 
     public static final String TABLE_NAME = "loc_track";
     public static final String KEY_ID = "id";
@@ -97,12 +100,12 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
      *
      * @param context: application context
      * @param date: today's date
-     * @return numSteps: an integer value with the number of records in the database
+     * @return locations: a list of Locations
      */
     //
-    public static Integer loadSingleRecord(Context context, String date){
-//        TODO: fix this
-        List<String> steps = new LinkedList<String>();
+    public static ArrayList<Location> loadSingleDay(Context context, String date){
+
+        ArrayList<Location> locations = new ArrayList<>();
         // Get the readable database
         StepAppOpenHelper databaseHelper = new StepAppOpenHelper(context);
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
@@ -111,19 +114,22 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         String [] whereArgs = { date };
 
         Cursor cursor = database.query(StepAppOpenHelper.TABLE_NAME, null, where, whereArgs, null,
-                null, null );
+                null, KEY_TIMESTAMP );
 
         // iterate over returned elements
         cursor.moveToFirst();
         for (int index=0; index < cursor.getCount(); index++){
-            steps.add(cursor.getString(0));
+            Location loc = new Location("");
+            loc.setLatitude(Double. parseDouble(cursor.getString(1)));
+            loc.setLongitude(Double. parseDouble(cursor.getString(2)));
+            locations.add(loc);
             cursor.moveToNext();
         }
         database.close();
 
-        Integer numSteps = steps.size();
-        Log.d("STORED STEPS TODAY: ", String.valueOf(numSteps));
-        return numSteps;
+        Integer numSteps = locations.size();
+        Log.d("NUMBER OF RETURNED POINTS: ", String.valueOf(numSteps));
+        return locations;
     }
 
     /**
@@ -134,6 +140,7 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
      * @return map: map with key-value pairs hour->number of steps
      */
     //
+    /*
     public static Map<Integer, Integer> loadStepsByHour(Context context, String date){
 //        TODO: fix this
         // 1. Define a map to store the hour and number of steps as key-value pairs
@@ -167,6 +174,7 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         // 6. Return the map with hours and number of steps
         return map;
     }
+     */
 
     /**
      * Utility function to get the number of steps by day
@@ -175,6 +183,7 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
      * @return map: map with key-value pairs hour->number of steps
      */
     //
+    /*
     public static Map<String, Integer> loadStepsByDay(Context context){
         //        TODO: fix this
 
@@ -207,6 +216,8 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         // 6. Return the map with hours and number of steps
         return map;
     }
+    */
+
 }
 
 
