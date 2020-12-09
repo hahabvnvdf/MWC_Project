@@ -255,7 +255,7 @@ class StepCounterListener implements SensorEventListener {
                 if (forwardSlope < 0 && downwardSlope > 0 && dataPointList.get(i) > stepThreshold ) {
                     mACCStepCounter += 1;
                     //When Goal is reached call the Congrats activity
-                    if(mACCStepCounter == 146)
+                    if(mACCStepCounter == 100)
                     {
                         HomeFragment.ShowCongrats();
                     }
