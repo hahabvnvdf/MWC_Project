@@ -174,8 +174,8 @@ public class ReportFragment extends Fragment {
             data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
 
         Column column = cartesian.column(data);
-        column.fill("#6395F2");
-        column.stroke("#6395F2");
+        column.fill("#1258DC");
+        column.stroke("#1258DC");
 
         column.tooltip()
                 .titleFormat("At hour: {%X}")
