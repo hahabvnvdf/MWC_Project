@@ -24,6 +24,19 @@
             <!-- android:name="com.google.android.gms.ads.APPLICATION_ID" -->
             <!-- android:value="ca-app-pub-################~##########"/> -->
         </activity>
+
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!--
+             The API key for Google Maps-based APIs.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
+
         <activity android:name=".ui.user.SignUpFragment">
 
         </activity>
