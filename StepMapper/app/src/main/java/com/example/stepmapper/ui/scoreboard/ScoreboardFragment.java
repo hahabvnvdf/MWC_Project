@@ -158,14 +158,13 @@ public class ScoreboardFragment extends Fragment {
                 tr_head.setPadding(0,0,0,30);
                 TextView tv0 = new TextView(getActivity());
                 tv0.setText("Friends");
-                tv0.setTextColor(R.color.colorPrimary);
-                //tv0.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                tv0.setTextColor(Color.parseColor("#0A337F"));
                 tv0.setGravity(Gravity.CENTER_HORIZONTAL);
                 tv0.setTextSize(25);
                 tv0.setTypeface(null, Typeface.BOLD);
                 TextView tv1 = new TextView(getActivity());
                 tv1.setText("Steps");
-                tv1.setTextColor(R.color.colorPrimary);
+                tv1.setTextColor(Color.parseColor("#0A337F"));
                 tv1.setGravity(Gravity.CENTER_HORIZONTAL);
                 tv1.setTextSize(25);
                 tv1.setTypeface(null, Typeface.BOLD);
@@ -183,14 +182,14 @@ public class ScoreboardFragment extends Fragment {
 
                     TextView tv2 = new TextView(getActivity());
                     tv2.setText(k.split("@")[0]);
-                    tv2.setTextColor(Color.parseColor("#ff0000"));
+                    tv2.setTextColor(Color.parseColor("#0A337F"));
                     tv2.setGravity(Gravity.CENTER_HORIZONTAL);
                     tv2.setTextSize(20);
                     tv2.setPadding(0,20,0,20);
                     //tv2.setBackgroundColor(R.color.colorAccent);
                     TextView tv3 = new TextView(getActivity());
                     tv3.setText(v);
-                    tv3.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    tv3.setTextColor(Color.parseColor("#0A337F"));
                     tv3.setGravity(Gravity.CENTER_HORIZONTAL);
                     tv3.setTextSize(20);
                     tv3.setPadding(0,20,0,20);
