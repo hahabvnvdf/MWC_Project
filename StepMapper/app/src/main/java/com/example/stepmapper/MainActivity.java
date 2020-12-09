@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity  {
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
+
         // Set action bar title
         setTitle(menuItem.getTitle());
         // Close the navigation drawer
