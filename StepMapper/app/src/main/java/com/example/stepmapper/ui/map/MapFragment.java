@@ -126,13 +126,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onDestroy() {
-        locationTrack.stopListener();
+        if (LocationIsActive) {
+            locationTrack.stopListener();
+        }
         super.onDestroy();
+
     }
     @Override
     public void onDestroyView (){
+        if (LocationIsActive) {
+            locationTrack.stopListener();
+        }
         super.onDestroyView();
-        locationTrack.stopListener();
+//        locationTrack.stopListener();
     }
 
 
@@ -240,27 +246,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         // Add polylines to the map.
         // Polylines are useful to show a route or some other connection between points.
-
-        Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, null, null, null, null,
+        String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT};
+        Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
                 null, StepAppOpenHelper.KEY_TIMESTAMP );
-
-        Polyline polyline1;
+//
+//        Polyline polyline1;
         Double firstLat = 0.0;
         Double firstLon = 0.0;
-        firstLon = Double. parseDouble(cursor.getString(1));
-        firstLat = Double. parseDouble(cursor.getString(2));
-        PolylineOptions polyTrack = new PolylineOptions();
+//        PolylineOptions polyTrack = new PolylineOptions();
 
         // iterate over returned elements
         cursor.moveToFirst();
-        for (int index=0; index < cursor.getCount(); index++){
+        firstLon = Double. parseDouble(cursor.getString(0));
+        firstLat = Double. parseDouble(cursor.getString(1));
+        Log.d("DATA_READ", "start "+firstLon+"/"+firstLat);
+//        for (int index=0; index < cursor.getCount(); index++){
 //            polyTrack.clickable(true).add(new LatLng(
 //                                    Double. parseDouble(cursor.getString(1)),
 //                                    Double. parseDouble(cursor.getString(2))));
-            Log.d("DATA_READ", "lat: "+cursor.getString(1)+", lon: "+cursor.getString(2));
-            cursor.moveToNext();
-        }
-        polyline1 = googleMap.addPolyline(polyTrack);
+//            Log.d("DATA_READ", "lat: "+cursor.getString(1)+", lon: "+cursor.getString(2));
+//            cursor.moveToNext();
+//        }
+//        polyline1 = googleMap.addPolyline(polyTrack);
         database_r.close();
 
 
@@ -278,7 +285,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         // Position the map's camera near Alice Springs in the center of Australia,
         // and set the zoom factor so most of Australia shows on the screen.
 //        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-35.016, 143.321), 4));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 15));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 18));
         // Set listeners for click events.
         googleMap.setOnPolylineClickListener(this);
         Log.d("DATA_READ", "end");
