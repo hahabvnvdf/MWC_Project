@@ -229,13 +229,13 @@ public class ReportFragment extends Fragment {
         column.fill("function() {" +
                 "            if (this.value < 100)" +
                 "                return '#609CE1';" +
-                "            return '#236AB9';" +
+                "            return '#133863';" +
                 "        }");
 
         column.stroke("function() {" +
                 "            if (this.value < 100)" +
                 "                return '#609CE1';" +
-                "            return '#236AB9';" +
+                "            return '#133863';" +
                 "        }");
 
         column.tooltip()

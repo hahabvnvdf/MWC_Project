@@ -7,7 +7,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:paddingHorizontal="30dp"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorAccent"
     tools:context=".ui.user.SignUpFragment">
 
 
@@ -101,6 +101,7 @@
         android:layout_height="60dp"
         android:text="@string/signup"
         android:textColor="#ffffff"
+        android:background="@drawable/roundcorner"
         android:layout_marginTop="30dp"
         android:textSize="25dp"
         android:textAllCaps="true">
