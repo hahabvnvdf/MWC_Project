@@ -183,14 +183,14 @@ public class ScoreboardFragment extends Fragment {
 
                     TextView tv2 = new TextView(getActivity());
                     tv2.setText(k.split("@")[0]);
-                    tv2.setTextColor(R.color.colorPrimary);
+                    tv2.setTextColor(Color.parseColor("#ff0000"));
                     tv2.setGravity(Gravity.CENTER_HORIZONTAL);
                     tv2.setTextSize(20);
                     tv2.setPadding(0,20,0,20);
                     //tv2.setBackgroundColor(R.color.colorAccent);
                     TextView tv3 = new TextView(getActivity());
                     tv3.setText(v);
-                    tv3.setTextColor(R.color.colorPrimary);
+                    tv3.setTextColor(getResources().getColor(R.color.colorPrimary));
                     tv3.setGravity(Gravity.CENTER_HORIZONTAL);
                     tv3.setTextSize(20);
                     tv3.setPadding(0,20,0,20);
