@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
@@ -46,7 +47,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private LocationTrack locationTrack;
     private Boolean LocationIsActive;
     private Thread th;
-    SQLiteDatabase database;
+    SQLiteDatabase database_w;
+    SQLiteDatabase database_r;
 
     private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
@@ -72,9 +74,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LocationIsActive  = false;
         // Get an instance of the database
         StepAppOpenHelper databaseOpenHelper = new StepAppOpenHelper(this.getContext());
-        database = databaseOpenHelper.getWritableDatabase();
+        database_w = databaseOpenHelper.getWritableDatabase();
+        database_r = databaseOpenHelper.getReadableDatabase();
+
         // TODO: erase database at new toggle
-        // database.deleteRecords(this.getContext());
+//         database_w.deleteRecords(this.getContext());
 
         btn.setText(getString(R.string.start_tracking));
 
@@ -115,14 +119,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-
-
-
-
-
-
+        Log.d("DATA_READ", "end2");
 
         return root;
     }
@@ -161,7 +158,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                             values.put(StepAppOpenHelper.KEY_TIMESTAMP, timeStamp.toString());
                             values.put(StepAppOpenHelper.KEY_LAT, latitude);
                             values.put(StepAppOpenHelper.KEY_LON, longitude);
-                            database.insert(StepAppOpenHelper.TABLE_NAME, null, values);
+                            database_w.insert(StepAppOpenHelper.TABLE_NAME, null, values);
                         }
                     });
                     try {
@@ -243,6 +240,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         // Add polylines to the map.
         // Polylines are useful to show a route or some other connection between points.
+
+        Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, null, null, null, null,
+                null, StepAppOpenHelper.KEY_TIMESTAMP );
+
+        Polyline polyline1;
+        Double firstLat = 0.0;
+        Double firstLon = 0.0;
+        firstLon = Double. parseDouble(cursor.getString(1));
+        firstLat = Double. parseDouble(cursor.getString(2));
+        PolylineOptions polyTrack = new PolylineOptions();
+
+        // iterate over returned elements
+        cursor.moveToFirst();
+        for (int index=0; index < cursor.getCount(); index++){
+//            polyTrack.clickable(true).add(new LatLng(
+//                                    Double. parseDouble(cursor.getString(1)),
+//                                    Double. parseDouble(cursor.getString(2))));
+            Log.d("DATA_READ", "lat: "+cursor.getString(1)+", lon: "+cursor.getString(2));
+            cursor.moveToNext();
+        }
+        polyline1 = googleMap.addPolyline(polyTrack);
+        database_r.close();
+
+
+/*
         Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
                 .clickable(true)
                 .add(
@@ -252,13 +274,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                         new LatLng(-33.501, 150.217),
                         new LatLng(-32.306, 149.248),
                         new LatLng(-32.491, 147.309)));
-
+*/
         // Position the map's camera near Alice Springs in the center of Australia,
         // and set the zoom factor so most of Australia shows on the screen.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-23.684, 133.903), 4));
-
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-35.016, 143.321), 4));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 15));
         // Set listeners for click events.
         googleMap.setOnPolylineClickListener(this);
+        Log.d("DATA_READ", "end");
     }
 
     @Override

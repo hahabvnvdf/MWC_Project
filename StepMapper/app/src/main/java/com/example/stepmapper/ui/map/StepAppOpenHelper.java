@@ -110,10 +110,44 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         StepAppOpenHelper databaseHelper = new StepAppOpenHelper(context);
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
 
-        String where = StepAppOpenHelper.KEY_LON + " = ?";
+        String where = StepAppOpenHelper.KEY_TIMESTAMP + " = ?";
         String [] whereArgs = { date };
 
         Cursor cursor = database.query(StepAppOpenHelper.TABLE_NAME, null, where, whereArgs, null,
+                null, KEY_TIMESTAMP );
+
+        // iterate over returned elements
+        cursor.moveToFirst();
+        for (int index=0; index < cursor.getCount(); index++){
+            Location loc = new Location("");
+            loc.setLatitude(Double. parseDouble(cursor.getString(1)));
+            loc.setLongitude(Double. parseDouble(cursor.getString(2)));
+            locations.add(loc);
+            cursor.moveToNext();
+        }
+        database.close();
+
+        Integer numSteps = locations.size();
+        Log.d("NUMBER OF RETURNED POINTS: ", String.valueOf(numSteps));
+        return locations;
+    }
+
+    /**
+     * Utility function to load all records
+     *
+     * @param context: application context
+     * @return locations: a list of Locations
+     */
+    //
+    public static ArrayList<Location> loadAllData(Context context){
+
+        ArrayList<Location> locations = new ArrayList<>();
+        // Get the readable database
+        StepAppOpenHelper databaseHelper = new StepAppOpenHelper(context);
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+
+
+        Cursor cursor = database.query(StepAppOpenHelper.TABLE_NAME, null, null, null, null,
                 null, KEY_TIMESTAMP );
 
         // iterate over returned elements
