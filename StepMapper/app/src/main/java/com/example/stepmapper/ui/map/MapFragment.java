@@ -1,7 +1,11 @@
 package com.example.stepmapper.ui.map;
 
 import android.Manifest;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.example.stepmapper.R;
 
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.Date;
 
 public class MapFragment extends Fragment {
 
@@ -27,6 +33,7 @@ public class MapFragment extends Fragment {
     private LocationTrack locationTrack;
     private Boolean LocationIsActive;
     private Thread th;
+    SQLiteDatabase database;
 
     private static final int REQUEST_COARSE_LOCATION_PERMISSION = 50;
     private static final int REQUEST_FINE_LOCATION_PERMISSION = 51;
@@ -44,6 +51,12 @@ public class MapFragment extends Fragment {
         locationText = (TextView) root.findViewById(R.id.location_text);
         Button btn = (Button)root.findViewById(R.id.btn);
         LocationIsActive  = false;
+        // Get an instance of the database
+        StepAppOpenHelper databaseOpenHelper = new StepAppOpenHelper(this.getContext());
+        database = databaseOpenHelper.getWritableDatabase();
+        // TODO: erase database at new toggle
+        // database.deleteRecords(this.getContext());
+
         btn.setText(getString(R.string.start_tracking));
 
 
@@ -104,6 +117,15 @@ public class MapFragment extends Fragment {
                             double latitude = locationTrack.getLatitude();
                             locationText.setText("Longitude: " + df.format(longitude) + "\nLatitude: " + df.format(latitude));
                             Log.d("LOCTIME", "update "+longitude+"/"+latitude);
+
+                            Date date = new Date();
+                            // Insert the data in the database
+                            Timestamp timeStamp = new Timestamp(date.getTime());
+                            ContentValues values = new ContentValues();
+                            values.put(StepAppOpenHelper.KEY_TIMESTAMP, timeStamp.toString());
+                            values.put(StepAppOpenHelper.KEY_LAT, latitude);
+                            values.put(StepAppOpenHelper.KEY_LON, longitude);
+                            database.insert(StepAppOpenHelper.TABLE_NAME, null, values);
                         }
                     });
                     try {
