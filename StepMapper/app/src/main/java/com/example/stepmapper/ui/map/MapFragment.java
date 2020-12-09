@@ -250,42 +250,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
                 null, StepAppOpenHelper.KEY_TIMESTAMP );
 //
-//        Polyline polyline1;
+        Polyline polyline1;
         Double firstLat = 0.0;
         Double firstLon = 0.0;
-//        PolylineOptions polyTrack = new PolylineOptions();
+        PolylineOptions polyTrack = new PolylineOptions();
 
         // iterate over returned elements
         cursor.moveToFirst();
         firstLon = Double. parseDouble(cursor.getString(0));
         firstLat = Double. parseDouble(cursor.getString(1));
+        Double lon = firstLon;
+        Double lat = firstLat;
+
         Log.d("DATA_READ", "start "+firstLon+"/"+firstLat);
-//        for (int index=0; index < cursor.getCount(); index++){
-//            polyTrack.clickable(true).add(new LatLng(
-//                                    Double. parseDouble(cursor.getString(1)),
-//                                    Double. parseDouble(cursor.getString(2))));
-//            Log.d("DATA_READ", "lat: "+cursor.getString(1)+", lon: "+cursor.getString(2));
-//            cursor.moveToNext();
-//        }
-//        polyline1 = googleMap.addPolyline(polyTrack);
+        for (int index=0; index < cursor.getCount(); index++){
+            lon = Double.parseDouble(cursor.getString(0));
+            lat = Double.parseDouble(cursor.getString(1));
+
+            polyTrack.clickable(true).add(new LatLng(
+                                    lat,
+                                    lon));
+            Log.d("DATA_READ", "lat: "+lat+", lon: "+lon);
+            cursor.moveToNext();
+        }
+        polyline1 = googleMap.addPolyline(polyTrack);
         database_r.close();
 
 
-/*
-        Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
-                .clickable(true)
-                .add(
-                        new LatLng(-35.016, 143.321),
-                        new LatLng(-34.747, 145.592),
-                        new LatLng(-34.364, 147.891),
-                        new LatLng(-33.501, 150.217),
-                        new LatLng(-32.306, 149.248),
-                        new LatLng(-32.491, 147.309)));
-*/
-        // Position the map's camera near Alice Springs in the center of Australia,
-        // and set the zoom factor so most of Australia shows on the screen.
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-35.016, 143.321), 4));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 18));
+        // Position the map's camera at the start
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 16));
         // Set listeners for click events.
         googleMap.setOnPolylineClickListener(this);
         Log.d("DATA_READ", "end");
