@@ -25,12 +25,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Dot;
-import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -40,7 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     // Views
     private Button mLocationButton;
@@ -57,11 +54,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     // Maps
     private GoogleMap map;
-    private static final int PATTERN_GAP_LENGTH_PX = 20;
-    private static final PatternItem DOT = new Dot();
-    private static final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
-    // Create a stroke pattern of a gap followed by a dot.
-    private static final List<PatternItem> PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT);
     private Polyline polyline;
     private PolylineOptions polyTrack;
 
@@ -301,30 +293,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         polyline = googleMap.addPolyline(polyTrack);
 //        database_r.close();
 
-
         // Position the map's camera at the start
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 16));
-        // Set listeners for click events.
-        googleMap.setOnPolylineClickListener(this);
         map = googleMap;
         Log.d("DATA_READ", "end");
     }
-
-    @Override
-    public void onPolylineClick(Polyline polyline) {
-        // Flip from solid stroke to dotted stroke pattern.
-        if ((polyline.getPattern() == null) || (!polyline.getPattern().contains(DOT))) {
-            polyline.setPattern(PATTERN_POLYLINE_DOTTED);
-        } else {
-            // The default pattern is a solid stroke.
-            polyline.setPattern(null);
-        }
-
-        Toast.makeText(getActivity(), "Route type " + polyline.getTag().toString(),
-                Toast.LENGTH_SHORT).show();
-    }
-    // [END maps_poly_activity_on_polyline_click]
-
 
 
 }
