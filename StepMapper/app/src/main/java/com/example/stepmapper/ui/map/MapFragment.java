@@ -165,12 +165,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void startTimerThread() {
         polyTrack = new PolylineOptions();
         th = new Thread(new Runnable() {
-            MarkerOptions markerOptions = new MarkerOptions()
+            private MarkerOptions markerOptions = new MarkerOptions()
                     .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
-//            Marker marker = map.addMarker(markerOptions);
+            private Marker marker;
+
 
             public void run() {
                 Log.d("LOCTIME", "updating");
+//                marker = map.addMarker(markerOptions);
                 while (LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -195,8 +197,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             // TODO: move marker to this position
 //                            MarkerOptions markerOptions = new MarkerOptions()
 //                                    .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
-                            Marker marker = map.addMarker(markerOptions);
-                            marker.setPosition(new LatLng(latitude, longitude));
+
+//                            marker = map.addMarker(markerOptions);
+//                            marker.setPosition(new LatLng(latitude, longitude));
                             // Move view to this position
                             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
 
