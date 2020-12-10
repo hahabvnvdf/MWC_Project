@@ -174,12 +174,13 @@ public class HomeFragment extends Fragment {
     }
 
     static void ShowCongrats() {
-
+        goalTextView.setVisibility(View.INVISIBLE);
         cdialog.setVisibility(View.VISIBLE);
         txtClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cdialog.setVisibility(View.INVISIBLE);
+                goalTextView.setVisibility(View.VISIBLE);
             }
         });
     }
