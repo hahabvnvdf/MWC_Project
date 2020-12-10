@@ -77,13 +77,14 @@ public class HomeFragment extends Fragment {
         txtClose = (Button) root.findViewById(R.id.txtClose);
         // Get the number of steps stored in the current date
         Date cDate = new Date();
+        //set the goal
+        FirebaseDatabaseHelper.setGoalInit("100");
         goalTextView = (Button) root.findViewById(R.id.textViewGoal);
         currentGoal = goalTextView.getText().toString().split(" : ")[1];
         String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
         stepsCountTextView = (TextView) root.findViewById(R.id.stepsCount);
         stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
-        stepsCountProgressBar.setMax(100);
-//        Log.d("Main", fDate);
+        stepsCountProgressBar.setMax(Integer.parseInt(currentGoal));
         FirebaseDatabaseHelper.loadSingleRecord(fDate);
 
         stepsCountTextView.setText(String.valueOf(stepsCompleted));

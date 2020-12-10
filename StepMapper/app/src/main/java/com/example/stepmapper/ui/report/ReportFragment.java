@@ -226,17 +226,9 @@ public class ReportFragment extends Fragment {
 
         Column column = cartesian1.column(data);
 
-        column.fill("function() {" +
-                "            if (this.value < 100)" +
-                "                return '#6395F2';" +
-                "            return '#1258DC';" +
-                "        }");
+        column.fill("#1258DC");
 
-        column.stroke("function() {" +
-                "            if (this.value < 100)" +
-                "                return '#6395F2';" +
-                "            return '#1258DC';" +
-                "        }");
+        column.stroke("#1258DC");
 
         column.tooltip()
                 .titleFormat("At day: {%X}")
