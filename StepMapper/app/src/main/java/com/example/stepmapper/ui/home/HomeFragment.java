@@ -1,17 +1,21 @@
 package com.example.stepmapper.ui.home;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,17 +34,18 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.example.stepmapper.R;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeFragment extends Fragment {
-    private static Dialog myDialog;
     private static LinearLayout cdialog;
-    private static TextView txtClose;
+    private static Button txtClose;
+    private static Button goalTextView;
     private static int stepsCompleted;
+    public static String goal;
     public Context context;
     MaterialButtonToggleGroup materialButtonToggleGroup;
 
-    private FirebaseAuth firebaseAuth;
     // Text view variables
     public TextView stepsCountTextView;
 
@@ -48,6 +53,10 @@ public class HomeFragment extends Fragment {
 
     private Sensor mSensorACC;
     private SensorManager mSensorManager;
+
+    public String currentGoal;
+//    public String goal;
+
 
     public static void setStepsCompleted(int stepsCompleted1) {
         stepsCompleted = stepsCompleted1;
@@ -59,23 +68,22 @@ public class HomeFragment extends Fragment {
     // Progress Bar variable
     public ProgressBar stepsCountProgressBar;
 
-    //Progress Count
-    private int progressCount;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        final View root = inflater.inflate(R.layout.fragment_home, container, false);
         cdialog = (LinearLayout) root.findViewById(R.id.congratsDialog);
-        txtClose = (TextView) root.findViewById(R.id.txtClose);
+        txtClose = (Button) root.findViewById(R.id.txtClose);
         // Get the number of steps stored in the current date
         Date cDate = new Date();
-
+        goalTextView = (Button) root.findViewById(R.id.textViewGoal);
+        currentGoal = goalTextView.getText().toString().split(" : ")[1];
         String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
         stepsCountTextView = (TextView) root.findViewById(R.id.stepsCount);
         stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
         stepsCountProgressBar.setMax(100);
-        Log.d("Main", fDate);
+//        Log.d("Main", fDate);
         FirebaseDatabaseHelper.loadSingleRecord(fDate);
 
         stepsCountTextView.setText(String.valueOf(stepsCompleted));
@@ -86,11 +94,51 @@ public class HomeFragment extends Fragment {
 
         // instantiate the StepCounterListener
         listener = new StepCounterListener(stepsCountTextView, stepsCountProgressBar, fDate);
+        final Button startBtn = (Button) root.findViewById(R.id.toggleStart);
+        final Button stopBtn = (Button) root.findViewById(R.id.toggleStop);
+        final LinearLayout setGoal = (LinearLayout) root.findViewById(R.id.setGoal);
+        final Button closeGoal = (Button) root.findViewById(R.id.goalClose);
+        final Button setGoalBtn = (Button) root.findViewById(R.id.goalSetBtn);
+        final TextInputEditText goalEditText = (TextInputEditText) root.findViewById(R.id.textGoal);
+
+
+        goalTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGoal.setVisibility(View.VISIBLE);
+            }
+        });
+
+        closeGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGoal.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        setGoalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (goalEditText.getText() != null) {
+                    goal = goalEditText.getText().toString();
+                    goalTextView.setText("Goal : " + goal);
+                    FirebaseDatabaseHelper.setGoal(goal);
+                    hideKeyboardFrom(getContext(), root);
+                    Toast.makeText(getContext(), "Goal is set to " + goal, Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getContext(), "Goal is not set", Toast.LENGTH_SHORT).show();
+                }
+                setGoal.setVisibility(View.INVISIBLE);
+            }
+        });
 
         // Check if the Accelerometer sensor exists
         if(mSensorACC != null){
             //register the ACC listener
             mSensorManager.registerListener(listener, mSensorACC, SensorManager.SENSOR_DELAY_NORMAL);
+            Toast.makeText(getContext(), "The step counter is STARTED", Toast.LENGTH_SHORT).show();
+            startBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            stopBtn.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         }
         else{
             Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
@@ -100,23 +148,24 @@ public class HomeFragment extends Fragment {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 if (group.getCheckedButtonId() == R.id.toggleStart) {
-
                     //Place code related to Start button
-                    Toast.makeText(getContext(), "START", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(getContext(), "The step counter is STARTED", Toast.LENGTH_SHORT).show();
                     // Check if the Accelerometer sensor exists
                     if(mSensorACC != null){
                         //register the ACC listener
                         mSensorManager.registerListener(listener, mSensorACC, SensorManager.SENSOR_DELAY_NORMAL);
-
+                        startBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        stopBtn.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                     }
                     else{
                         Toast.makeText(getContext(), R.string.acc_not_available, Toast.LENGTH_SHORT).show();
                     }
 
                 } else if (group.getCheckedButtonId() == R.id.toggleStop) {
-                    Toast.makeText(getContext(), "STOP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "The step counter is STOP", Toast.LENGTH_SHORT).show();
                     mSensorManager.unregisterListener(listener);
+                    startBtn.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    stopBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
         });
@@ -134,12 +183,21 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    public static void setGoal(String goal){
+        goalTextView.setText("Goal : " + goal);
+    }
+
     @Override
     public void onDestroyView (){
         super.onDestroyView();
         mSensorManager.unregisterListener(listener);
     }
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }
+
 
 // Sensor event listener
 class StepCounterListener implements SensorEventListener {
@@ -255,7 +313,7 @@ class StepCounterListener implements SensorEventListener {
                 if (forwardSlope < 0 && downwardSlope > 0 && dataPointList.get(i) > stepThreshold ) {
                     mACCStepCounter += 1;
                     //When Goal is reached call the Congrats activity
-                    if(mACCStepCounter == 100)
+                    if(mACCStepCounter == Integer.parseInt(HomeFragment.goal))
                     {
                         HomeFragment.ShowCongrats();
                     }

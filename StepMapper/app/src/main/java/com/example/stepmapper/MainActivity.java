@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity  {
             signin.setVisibility(View.GONE);
             username.setVisibility(View.VISIBLE);
             username.setText(user.getEmail());
+            FirebaseDatabaseHelper.setGoalInit("100");
             FirebaseDatabaseHelper.loadSingleRecord(current_time);
             FirebaseDatabaseHelper.loadStepsByHour(current_time);
             FirebaseDatabaseHelper.loadStepsByDay();
