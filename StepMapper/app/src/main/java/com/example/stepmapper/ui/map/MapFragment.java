@@ -91,7 +91,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     getFineLocation();
 
                     // TODO: erase database at new toggle
-//         database_w.deleteRecords(this.getContext());
+//                    database_w.deleteRecords(this.getContext());
+                    int numberDeletedRecords = database_w.delete(StepAppOpenHelper.TABLE_NAME, null, null);
 
 
                     locationTrack = new LocationTrack(getActivity());
@@ -112,11 +113,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
         Log.d("LOCATION_TRACK", "added listener");
 
-        syncMap();
+
+        // GOOGLE MAP
+        // Retrieve the content view that renders the map.
+        getActivity().setContentView(R.layout.fragment_map);
+
+        // Get the SupportMapFragment and request notification when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        Log.d("DATA_READ", "end2");
+//        syncMap();
         btn.performClick();
         return root;
     }
 
+    /*
     private void syncMap(){
         // GOOGLE MAP
         // Retrieve the content view that renders the map.
@@ -127,7 +139,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         Log.d("DATA_READ", "end2");
+        return;
     }
+    */
+
 
     @Override
     public void onDestroy() {
@@ -174,7 +189,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             values.put(StepAppOpenHelper.KEY_LAT, latitude);
                             values.put(StepAppOpenHelper.KEY_LON, longitude);
                             database_w.insert(StepAppOpenHelper.TABLE_NAME, null, values);
-                            // TODO: add point to polyline
+                            // add point to polyline
                             polyTrack.add(new LatLng(latitude, longitude));
                             polyline = map.addPolyline(polyTrack);
                             // TODO: move marker to this position
@@ -182,7 +197,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //                                    .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
                             Marker marker = map.addMarker(markerOptions);
                             marker.setPosition(new LatLng(latitude, longitude));
-                            // TODO: move view to this position
+                            // Move view to this position
                             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
 
                         }
@@ -275,20 +290,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         polyTrack = new PolylineOptions();
 
         // iterate over returned elements
-        cursor.moveToFirst();
-        firstLon = Double. parseDouble(cursor.getString(0));
-        firstLat = Double. parseDouble(cursor.getString(1));
-        Double lon = firstLon;
-        Double lat = firstLat;
+        if (cursor.moveToFirst()) {
+            firstLon = Double.parseDouble(cursor.getString(0));
+            firstLat = Double.parseDouble(cursor.getString(1));
+            Double lon = firstLon;
+            Double lat = firstLat;
 
-        Log.d("DATA_READ", "start "+firstLon+"/"+firstLat);
-        for (int index=0; index < cursor.getCount(); index++){
-            lon = Double.parseDouble(cursor.getString(0));
-            lat = Double.parseDouble(cursor.getString(1));
+            Log.d("DATA_READ", "start " + firstLon + "/" + firstLat);
+            for (int index = 0; index < cursor.getCount(); index++) {
+                lon = Double.parseDouble(cursor.getString(0));
+                lat = Double.parseDouble(cursor.getString(1));
 
-            polyTrack.add(new LatLng(lat, lon));
-            Log.d("DATA_READ", "lat: "+lat+", lon: "+lon);
-            cursor.moveToNext();
+                polyTrack.add(new LatLng(lat, lon));
+                Log.d("DATA_READ", "lat: " + lat + ", lon: " + lon);
+                cursor.moveToNext();
+            }
         }
         polyline = googleMap.addPolyline(polyTrack);
 //        database_r.close();
