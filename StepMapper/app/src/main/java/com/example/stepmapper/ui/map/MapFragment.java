@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -168,6 +169,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             private MarkerOptions markerOptions = new MarkerOptions()
                     .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
             private Marker marker;
+            private List<Marker> markerList = new ArrayList<>();
+
 
 
             public void run() {
@@ -200,6 +203,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 //                            marker = map.addMarker(markerOptions);
 //                            marker.setPosition(new LatLng(latitude, longitude));
+                            if(markerList!=null&&map!=null){
+                                for(int i=0;i<markerList.size();i++){
+                                    markerList.get(i).remove();
+                                }
+                            }
+                            marker = map.addMarker(new MarkerOptions().position(
+                                    new LatLng(locationTrack.getLatitude(),
+                                            locationTrack.getLongitude())));
+                            markerList.add(marker);
+
                             // Move view to this position
                             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
 
