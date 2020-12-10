@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.example.stepmapper.R;
@@ -29,6 +28,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -55,11 +56,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     DecimalFormat df = new DecimalFormat("##.######");
 
     // Maps
+    private GoogleMap map;
     private static final int PATTERN_GAP_LENGTH_PX = 20;
     private static final PatternItem DOT = new Dot();
     private static final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
     // Create a stroke pattern of a gap followed by a dot.
     private static final List<PatternItem> PATTERN_POLYLINE_DOTTED = Arrays.asList(GAP, DOT);
+    private Polyline polyline;
+    private PolylineOptions polyTrack;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +81,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         database_w = databaseOpenHelper.getWritableDatabase();
         database_r = databaseOpenHelper.getReadableDatabase();
 
-        // TODO: erase database at new toggle
-//         database_w.deleteRecords(this.getContext());
 
         btn.setText(getString(R.string.start_tracking));
 
@@ -86,13 +88,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("LOCATION_TRACK", "click");
                 Button btn = (Button)getActivity().findViewById(R.id.btn);
                 LocationIsActive  = !LocationIsActive;
                 if (LocationIsActive){
+                    Log.d("LOCATION_TRACK", "active");
                     btn.setText(getString(R.string.stop_tracking));
     //                getLocation();
                     getCoarseLocation();
                     getFineLocation();
+
+                    // TODO: erase database at new toggle
+//         database_w.deleteRecords(this.getContext());
+
+
                     locationTrack = new LocationTrack(getActivity());
                     locationTrack.setTextViewToModify(locationText);
 
@@ -103,14 +112,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     }
 
                 } else{
+                    Log.d("LOCATION_TRACK", "not active");
                     if(th.isAlive()) th.interrupt();
                     btn.setText(getString(R.string.start_tracking));
                 }
             }
-
-
         });
+        Log.d("LOCATION_TRACK", "added listener");
 
+        syncMap();
+        btn.performClick();
+        return root;
+    }
+
+    private void syncMap(){
         // GOOGLE MAP
         // Retrieve the content view that renders the map.
         getActivity().setContentView(R.layout.fragment_map);
@@ -120,8 +135,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         Log.d("DATA_READ", "end2");
-
-        return root;
     }
 
     @Override
@@ -142,9 +155,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-
     private void startTimerThread() {
+        polyTrack = new PolylineOptions();
         th = new Thread(new Runnable() {
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
+//            Marker marker = map.addMarker(markerOptions);
+
             public void run() {
                 Log.d("LOCTIME", "updating");
                 while (LocationIsActive) {
@@ -165,6 +182,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                             values.put(StepAppOpenHelper.KEY_LAT, latitude);
                             values.put(StepAppOpenHelper.KEY_LON, longitude);
                             database_w.insert(StepAppOpenHelper.TABLE_NAME, null, values);
+                            // TODO: add point to polyline
+                            polyTrack.add(new LatLng(latitude, longitude));
+                            polyline = map.addPolyline(polyTrack);
+                            // TODO: move marker to this position
+//                            MarkerOptions markerOptions = new MarkerOptions()
+//                                    .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
+                            Marker marker = map.addMarker(markerOptions);
+                            marker.setPosition(new LatLng(latitude, longitude));
+                            // TODO: move view to this position
+                            map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+
                         }
                     });
                     try {
@@ -249,11 +277,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT};
         Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
                 null, StepAppOpenHelper.KEY_TIMESTAMP );
-//
-        Polyline polyline1;
+
         Double firstLat = 0.0;
         Double firstLon = 0.0;
-        PolylineOptions polyTrack = new PolylineOptions();
+        polyTrack = new PolylineOptions();
 
         // iterate over returned elements
         cursor.moveToFirst();
@@ -267,20 +294,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             lon = Double.parseDouble(cursor.getString(0));
             lat = Double.parseDouble(cursor.getString(1));
 
-            polyTrack.clickable(true).add(new LatLng(
-                                    lat,
-                                    lon));
+            polyTrack.add(new LatLng(lat, lon));
             Log.d("DATA_READ", "lat: "+lat+", lon: "+lon);
             cursor.moveToNext();
         }
-        polyline1 = googleMap.addPolyline(polyTrack);
-        database_r.close();
+        polyline = googleMap.addPolyline(polyTrack);
+//        database_r.close();
 
 
         // Position the map's camera at the start
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 16));
         // Set listeners for click events.
         googleMap.setOnPolylineClickListener(this);
+        map = googleMap;
         Log.d("DATA_READ", "end");
     }
 
