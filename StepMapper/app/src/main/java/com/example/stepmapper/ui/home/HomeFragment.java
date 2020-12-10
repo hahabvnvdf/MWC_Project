@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
     }
 
     // Progress Bar variable
-    public ProgressBar stepsCountProgressBar;
+    public static ProgressBar stepsCountProgressBar;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
         String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
         stepsCountTextView = (TextView) root.findViewById(R.id.stepsCount);
         stepsCountProgressBar = (ProgressBar) root.findViewById(R.id.progressBar);
-        stepsCountProgressBar.setMax(Integer.parseInt(currentGoal));
+
         FirebaseDatabaseHelper.loadSingleRecord(fDate);
 
         stepsCountTextView.setText(String.valueOf(stepsCompleted));
@@ -186,6 +186,7 @@ public class HomeFragment extends Fragment {
 
     public static void setGoal(String goal){
         goalTextView.setText("Goal : " + goal);
+        stepsCountProgressBar.setMax(Integer.parseInt(goal));
     }
 
     @Override
