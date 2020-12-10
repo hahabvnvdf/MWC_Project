@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".ui.home.HomeFragment">
 
 
-    <TextView
+    <Button
         android:id="@+id/textViewGoal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/Widget.Button_Custom"
         android:text="@string/goal"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/background"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +30,7 @@
         android:layout_height="wrap_content"
         android:text="0"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textSize="35sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,17 +41,16 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
+        style="?android:progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        style="?android:progressBarStyleHorizontal"
         android:layout_gravity="center"
-        android:layout_marginTop="124dp"
+        android:progressDrawable="@drawable/circle"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:progressDrawable="@drawable/circle"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/textView1"
@@ -66,12 +67,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
         android:text="@string/steps"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,17 +86,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
-        app:singleSelection="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/toggleStart"
             style="?attr/materialButtonStyle"
-            android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:text="@string/toggle_start"
             android:textColor="@color/white"
             app:icon="@drawable/ic_start" />
@@ -102,13 +104,133 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/toggleStop"
             style="?attr/materialButtonStyle"
-            app:icon="@drawable/ic_stop"
-            android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:text="@string/toggle_stop"
             android:textColor="@color/white"
-            android:text="@string/toggle_stop" />
+            app:icon="@drawable/ic_stop" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
+    <LinearLayout
+    android:id="@+id/congratsDialog"
+    android:layout_width="350dp"
+    android:layout_height="375dp"
+    android:layout_gravity="center"
+    android:background="@color/colorAccent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:visibility="invisible"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
+    <Button
+        android:id="@+id/txtClose"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="end"
+        android:background="@drawable/roundcorner"
+        android:gravity="center"
+        android:text="X"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+
+    <ImageView
+        android:id="@+id/txtViewGoal"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:foregroundGravity="center_horizontal"
+        android:src="@drawable/ic_trophy1" />
+
+    <TextView
+        android:id="@+id/textView_Congrats"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_marginTop="70dp"
+        android:gravity="center_horizontal"
+        android:text="@string/Congrats"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="italic" />
+
+
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/setGoal"
+        android:layout_width="294dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/goalClose"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:background="@drawable/roundcorner"
+            android:gravity="center"
+            android:text="X"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="Please set your desired goal"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            style="@style/Widget.AppTheme.TextInputLayoutList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your Goal ..."
+            android:textColorHint="@color/background"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/btn_addFriend"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.444"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.752">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textGoal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:textColor="@color/background" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/goalSetBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/roundcorner"
+            android:gravity="center"
+            android:text="OK"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

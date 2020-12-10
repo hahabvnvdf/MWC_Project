@@ -12,7 +12,7 @@
     <string name="toggle_Weekly">Weekly</string>
     <string name="menu_map">Map</string>
     <string name="menu_scoreboard">Scoreboard</string>
-    <string name="goal">Goal: 100</string>
+    <string name="goal">Goal : 0</string>
     <string name="_0">0</string>
     <string name="steps">Steps</string>
     <string name="start">Start</string>
@@ -31,7 +31,7 @@
     <string name="signin">Sign In</string>
     <string name="createAccount">Don\'t have an account?</string>
     <string name="signup">Sign Up</string>
-    <string name="Congrats">Congratulations! You have completed your daily goal.</string>
+    <string name="Congrats">Congratulations! You have achieved your daily goal.</string>
     <string name="password">Password</string>
     <string name="backToLogin">"Back to "</string>
     <string name="logout">Log Out</string>

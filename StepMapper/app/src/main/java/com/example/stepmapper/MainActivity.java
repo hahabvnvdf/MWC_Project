@@ -1,6 +1,7 @@
 package com.example.stepmapper;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -39,7 +40,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity  {
-
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity  {
             signin.setVisibility(View.GONE);
             username.setVisibility(View.VISIBLE);
             username.setText(user.getEmail());
+            FirebaseDatabaseHelper.setGoalInit("100");
             FirebaseDatabaseHelper.loadSingleRecord(current_time);
             FirebaseDatabaseHelper.loadStepsByHour(current_time);
             FirebaseDatabaseHelper.loadStepsByDay();
@@ -138,8 +139,6 @@ public class MainActivity extends AppCompatActivity  {
             username.setVisibility(View.INVISIBLE);
         }
 //        navigationView.getMenu().findItem(R.id.loginName).setVisible(true);
-
-
 
     }
 
@@ -199,6 +198,7 @@ public class MainActivity extends AppCompatActivity  {
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
+
         // Set action bar title
         setTitle(menuItem.getTitle());
         // Close the navigation drawer

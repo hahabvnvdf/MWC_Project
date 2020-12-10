@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -239,6 +240,7 @@ public class FirebaseDatabaseHelper{
 
     private static void getFriendData(final DataSnapshot snapshot, final String date) {
         final String username = snapshot.getKey();
+
         String uid =snapshot.child("uid").getValue().toString();
         final DatabaseReference mDatabaseReference2 = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +uid).child(date);
         Map<String, String> friendData = new HashMap<>();
@@ -277,4 +279,36 @@ public class FirebaseDatabaseHelper{
 
     }
 
+    public static void setGoalInit(final String goal) {
+        if (firebaseAuth.getCurrentUser() != null) {
+            String username = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+//            Log.d("User", username);
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +firebaseAuth.getCurrentUser().getUid());
+
+            mDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(!snapshot.child("Goal").exists()) {
+                        mDatabaseReference.child("Goal").setValue(goal);
+                    }else{
+                        HomeFragment.setGoal(snapshot.child("Goal").getValue().toString());
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    public static void setGoal(final String goal) {
+        if (firebaseAuth.getCurrentUser() != null) {
+            String username = firebaseAuth.getCurrentUser().getEmail().replace(".", "");
+//            Log.d("User", username);
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child("Step Count").child(username+" : " +firebaseAuth.getCurrentUser().getUid()).child("Goal");
+
+            mDatabaseReference.setValue(goal);
+        }
+    }
 }

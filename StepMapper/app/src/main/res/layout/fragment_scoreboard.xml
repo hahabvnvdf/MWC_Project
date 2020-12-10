@@ -4,54 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:visibility="visible"
     tools:context=".ui.scoreboard.ScoreboardFragment">
 
     <Button
         android:id="@+id/btn_addFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
         android:background="@drawable/roundcorner"
+        android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.124" />
+        app:layout_constraintVertical_bias="0.248" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
-        android:layout_width="300dp"
+        style="@style/Widget.AppTheme.TextInputLayoutList"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:hint="Enter Friend name here"
+        android:textColorHint="@color/colorPrimary"
+        app:boxStrokeColor="@color/colorPrimary"
+        app:errorEnabled="true"
+        app:layout_constraintBottom_toTopOf="@+id/btn_addFriend"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.075"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.124">
+        app:layout_constraintVertical_bias="0.752">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ip_addFriend"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter Friend name here"
-            tools:layout_editor_absoluteX="20dp"
-            tools:layout_editor_absoluteY="80dp" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text"
+            android:textColor="#236AB9" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/btn_addFriend"
+        app:layout_constraintVertical_bias="0.179">
 
         <TableLayout
             android:id="@+id/tableFriend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stretchColumns="0,1">
-        </TableLayout>
+            android:stretchColumns="0,1"></TableLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

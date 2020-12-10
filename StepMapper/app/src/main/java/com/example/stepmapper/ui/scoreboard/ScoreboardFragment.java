@@ -1,11 +1,14 @@
 package com.example.stepmapper.ui.scoreboard;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,17 +147,27 @@ public class ScoreboardFragment extends Fragment {
         final TableLayout tl = (TableLayout) root.findViewById(R.id.tableFriend);
         tl.removeAllViews();
         new Handler().postDelayed(new Runnable() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void run() {
                 TableRow tr_head = new TableRow(getActivity());
                 tr_head.setLayoutParams(new TableRow.LayoutParams(
                         TableRow.LayoutParams.WRAP_CONTENT,
                         TableRow.LayoutParams.WRAP_CONTENT));
-
+                //tr_head.setBackgroundColor(R.color.colorAccent);
+                tr_head.setPadding(0,0,0,30);
                 TextView tv0 = new TextView(getActivity());
-                tv0.setText("Friend");
+                tv0.setText("Friends");
+                tv0.setTextColor(Color.parseColor("#0A337F"));
+                tv0.setGravity(Gravity.CENTER_HORIZONTAL);
+                tv0.setTextSize(25);
+                tv0.setTypeface(null, Typeface.BOLD);
                 TextView tv1 = new TextView(getActivity());
                 tv1.setText("Steps");
+                tv1.setTextColor(Color.parseColor("#0A337F"));
+                tv1.setGravity(Gravity.CENTER_HORIZONTAL);
+                tv1.setTextSize(25);
+                tv1.setTypeface(null, Typeface.BOLD);
                 tr_head.addView(tv0);
                 tr_head.addView(tv1);
                 tl.addView(tr_head);
@@ -168,9 +181,19 @@ public class ScoreboardFragment extends Fragment {
                             TableRow.LayoutParams.WRAP_CONTENT));
 
                     TextView tv2 = new TextView(getActivity());
-                    tv2.setText(k);
+                    tv2.setText(k.split("@")[0]);
+                    tv2.setTextColor(Color.parseColor("#0A337F"));
+                    tv2.setGravity(Gravity.CENTER_HORIZONTAL);
+                    tv2.setTextSize(20);
+                    tv2.setPadding(0,20,0,20);
+                    //tv2.setBackgroundColor(R.color.colorAccent);
                     TextView tv3 = new TextView(getActivity());
                     tv3.setText(v);
+                    tv3.setTextColor(Color.parseColor("#0A337F"));
+                    tv3.setGravity(Gravity.CENTER_HORIZONTAL);
+                    tv3.setTextSize(20);
+                    tv3.setPadding(0,20,0,20);
+                    //tv3.setBackgroundColor(R.color.colorAccent);
                     tr_head1.addView(tv2);
                     tr_head1.addView(tv3);
                     tl.addView(tr_head1);
