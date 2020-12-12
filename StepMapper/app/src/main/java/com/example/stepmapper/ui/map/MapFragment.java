@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     // Views
     private Button mLocationButton;
@@ -67,7 +67,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View root = inflater.inflate(R.layout.fragment_map, container, false);
 
         locationText = (TextView) root.findViewById(R.id.location_text);
-        Button btn = (Button)root.findViewById(R.id.btn);
         LocationIsActive  = false;
         // Get an instance of the database
         StepAppOpenHelper databaseOpenHelper = new StepAppOpenHelper(this.getContext());
@@ -75,45 +74,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         database_r = databaseOpenHelper.getReadableDatabase();
 
 
-        btn.setText(getString(R.string.start_tracking));
-
-
+        Button btn = (Button)root.findViewById(R.id.btn);
+        btn.setOnClickListener(this);
+/*
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("LOCATION_TRACK", "click");
-                Button btn = (Button)getActivity().findViewById(R.id.btn);
-                LocationIsActive  = !LocationIsActive;
-                if (LocationIsActive){
-                    Log.d("LOCATION_TRACK", "active");
-                    btn.setText(getString(R.string.stop_tracking));
-    //                getLocation();
-                    getCoarseLocation();
-                    getFineLocation();
-
-                    // TODO: erase database at new toggle
-//                    database_w.deleteRecords(this.getContext());
-                    int numberDeletedRecords = database_w.delete(StepAppOpenHelper.TABLE_NAME, null, null);
-
-
-                    locationTrack = new LocationTrack(getActivity());
-                    locationTrack.setTextViewToModify(locationText);
-
-                    if (locationTrack.canGetLocation()) {
-                        startTimerThread();
-                    } else {
-                        locationTrack.showSettingsAlert();
-                    }
-
-                } else{
-                    Log.d("LOCATION_TRACK", "not active");
-                    if(th.isAlive()) th.interrupt();
-                    btn.setText(getString(R.string.start_tracking));
-                }
-            }
+                toggleTracking();
         });
-        Log.d("LOCATION_TRACK", "added listener");
-
+ */
 
         // GOOGLE MAP
         // Retrieve the content view that renders the map.
@@ -123,27 +93,60 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Log.d("DATA_READ", "end2");
+        View view = mapFragment.getView();
+        view.setClickable(false);
+
+
 //        syncMap();
-        btn.performClick();
+//        btn.performClick();
         return root;
     }
 
-    /*
-    private void syncMap(){
-        // GOOGLE MAP
-        // Retrieve the content view that renders the map.
-        getActivity().setContentView(R.layout.fragment_map);
+    @Override
+    public void onClick(View v) {
+        Log.d("LOCATION_TRACK", "click registered");
 
-        // Get the SupportMapFragment and request notification when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        Log.d("DATA_READ", "end2");
-        return;
+        switch (v.getId()) {
+            case R.id.btn:{
+                toggleTracking();
+                break;
+            }
+            default:
+                break;
+        }
     }
-    */
 
+    public void toggleTracking() {
+        Log.d("LOCATION_TRACK", "click");
+        Button btn = (Button)getActivity().findViewById(R.id.btn);
+        LocationIsActive  = !LocationIsActive;
+        if (LocationIsActive){
+            Log.d("LOCATION_TRACK", "active");
+            btn.setText(getString(R.string.stop_tracking));
+            //                getLocation();
+            getCoarseLocation();
+            getFineLocation();
+
+            // TODO: erase database at new toggle
+//                    database_w.deleteRecords(this.getContext());
+            int numberDeletedRecords = database_w.delete(StepAppOpenHelper.TABLE_NAME, null, null);
+
+
+            locationTrack = new LocationTrack(getActivity());
+            locationTrack.setTextViewToModify(locationText);
+
+            if (locationTrack.canGetLocation()) {
+                startTimerThread();
+            } else {
+                locationTrack.showSettingsAlert();
+            }
+
+        } else{
+            Log.d("LOCATION_TRACK", "not active");
+            if(th.isAlive()) th.interrupt();
+            btn.setText(getString(R.string.start_tracking));
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -153,6 +156,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
 
     }
+
     @Override
     public void onDestroyView (){
         if (LocationIsActive) {
@@ -162,7 +166,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //        locationTrack.stopListener();
     }
 
-
     private void startTimerThread() {
         polyTrack = new PolylineOptions();
         th = new Thread(new Runnable() {
@@ -171,10 +174,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             private Marker marker;
             private List<Marker> markerList = new ArrayList<>();
 
-
-
             public void run() {
-                Log.d("LOCTIME", "updating");
 //                marker = map.addMarker(markerOptions);
                 while (LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
@@ -197,12 +197,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             // add point to polyline
                             polyTrack.add(new LatLng(latitude, longitude));
                             polyline = map.addPolyline(polyTrack);
-                            // TODO: move marker to this position
-//                            MarkerOptions markerOptions = new MarkerOptions()
-//                                    .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
-
-//                            marker = map.addMarker(markerOptions);
-//                            marker.setPosition(new LatLng(latitude, longitude));
+                            // Move marker to this position
                             if(markerList!=null&&map!=null){
                                 for(int i=0;i<markerList.size();i++){
                                     markerList.get(i).remove();
@@ -212,10 +207,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     new LatLng(locationTrack.getLatitude(),
                                             locationTrack.getLongitude())));
                             markerList.add(marker);
-
                             // Move view to this position
                             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-
                         }
                     });
                     try {
@@ -288,15 +281,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // [START maps_poly_activity_on_polyline_click]
     /**
      * Manipulates the map when it's available.
-     * The API invokes this callback when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * In this tutorial, we add polylines and polygons to represent routes and areas on the map.
+     * The API invokes this callback when the map is ready to be used
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        // Add polylines to the map.
-        // Polylines are useful to show a route or some other connection between points.
         String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT};
         Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
                 null, StepAppOpenHelper.KEY_TIMESTAMP );
