@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+
 import com.example.stepmapper.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -67,15 +68,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         View root = inflater.inflate(R.layout.fragment_map, container, false);
 
         locationText = (TextView) root.findViewById(R.id.location_text);
-        LocationIsActive  = false;
+        LocationIsActive = false;
         // Get an instance of the database
         StepAppOpenHelper databaseOpenHelper = new StepAppOpenHelper(this.getContext());
         database_w = databaseOpenHelper.getWritableDatabase();
         database_r = databaseOpenHelper.getReadableDatabase();
 
-
-        Button btn = (Button)root.findViewById(R.id.btn);
+        Button btn = (Button) root.findViewById(R.id.btn);
         btn.setOnClickListener(this);
+
+
+/*
+        root.findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(map != null)
+                {
+                    Toast.makeText(getActivity(),"Clicked!!", Toast.LENGTH_SHORT).show();
+                    Log.d("LOCATION_TRACK", "click");
+                    btn.performClick();
+                }
+            }
+        });
+
+ */
 /*
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
 
 //        syncMap();
-//        btn.performClick();
+        btn.performClick();
         return root;
     }
 
@@ -107,7 +123,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         Log.d("LOCATION_TRACK", "click registered");
 
         switch (v.getId()) {
-            case R.id.btn:{
+            case R.id.btn: {
                 toggleTracking();
                 break;
             }
@@ -118,9 +134,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     public void toggleTracking() {
         Log.d("LOCATION_TRACK", "click");
-        Button btn = (Button)getActivity().findViewById(R.id.btn);
-        LocationIsActive  = !LocationIsActive;
-        if (LocationIsActive){
+        Button btn = (Button) getActivity().findViewById(R.id.btn);
+        LocationIsActive = !LocationIsActive;
+        if (LocationIsActive) {
             Log.d("LOCATION_TRACK", "active");
             btn.setText(getString(R.string.stop_tracking));
             //                getLocation();
@@ -141,9 +157,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 locationTrack.showSettingsAlert();
             }
 
-        } else{
+        } else {
             Log.d("LOCATION_TRACK", "not active");
-            if(th.isAlive()) th.interrupt();
+            if (th.isAlive()) th.interrupt();
             btn.setText(getString(R.string.start_tracking));
         }
     }
@@ -158,7 +174,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     }
 
     @Override
-    public void onDestroyView (){
+    public void onDestroyView() {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
@@ -172,10 +188,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             private MarkerOptions markerOptions = new MarkerOptions()
                     .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
             private Marker marker;
+            private Marker firstMarker;
             private List<Marker> markerList = new ArrayList<>();
-
             public void run() {
-//                marker = map.addMarker(markerOptions);
+//                marker = map.addMarker(markerOptions.position(
+//                        new LatLng(locationTrack.getLatitude(),
+//                                locationTrack.getLongitude())));
                 while (LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -184,7 +202,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                             double longitude = locationTrack.getLongitude();
                             double latitude = locationTrack.getLatitude();
                             locationText.setText("Longitude: " + df.format(longitude) + "\nLatitude: " + df.format(latitude));
-                            Log.d("LOCTIME", "update "+longitude+"/"+latitude);
+                            Log.d("LOCTIME", "update " + longitude + "/" + latitude);
 
                             Date date = new Date();
                             // Insert the data in the database
@@ -198,23 +216,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                             polyTrack.add(new LatLng(latitude, longitude));
                             polyline = map.addPolyline(polyTrack);
                             // Move marker to this position
-                            if(markerList!=null&&map!=null){
-                                for(int i=0;i<markerList.size();i++){
+
+                            if (markerList != null && map != null) {
+                                for (int i = 0; i < markerList.size(); i++) {
                                     markerList.get(i).remove();
                                 }
                             }
                             marker = map.addMarker(new MarkerOptions().position(
                                     new LatLng(locationTrack.getLatitude(),
                                             locationTrack.getLongitude())));
-                            markerList.add(marker);
+                            if(firstMarker!=null){
+                                markerList.add(marker);
+                            }else{
+                                firstMarker = marker;
+                            }
+
+
                             // Move view to this position
                             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
                         }
                     });
                     try {
                         Thread.sleep(1000);
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -236,6 +260,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             return;
         }
     }
+
     private void getCoarseLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -253,7 +278,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_COARSE_LOCATION_PERMISSION) {
-            if(grantResults.length > 0
+            if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCoarseLocation();
             } else {
@@ -263,7 +288,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             }
         }
         if (requestCode == REQUEST_FINE_LOCATION_PERMISSION) {
-            if(grantResults.length > 0
+            if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getFineLocation();
             } else {
@@ -275,10 +300,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     }
 
 
-
-
-
     // [START maps_poly_activity_on_polyline_click]
+
     /**
      * Manipulates the map when it's available.
      * The API invokes this callback when the map is ready to be used
@@ -287,7 +310,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     public void onMapReady(GoogleMap googleMap) {
         String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT};
         Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
-                null, StepAppOpenHelper.KEY_TIMESTAMP );
+                null, StepAppOpenHelper.KEY_TIMESTAMP);
 
         Double firstLat = 0.0;
         Double firstLon = 0.0;
@@ -317,6 +340,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 16));
         map = googleMap;
         Log.d("DATA_READ", "end");
+
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        map.setMyLocationEnabled(true);
+
+
+//        map.setOnMapClickListener(new GoogleMap.OnMapClickListener()
+//        {
+//            @Override
+//            public void onMapClick(LatLng arg0)
+//            {
+//                Toast.makeText(getActivity(),"Clicked!!", Toast.LENGTH_SHORT).show();
+//                Log.d("LOCATION_TRACK", "click");
+//            }
+//        });
+
+
+
     }
 
 
