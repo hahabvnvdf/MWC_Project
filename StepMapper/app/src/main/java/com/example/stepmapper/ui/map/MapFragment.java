@@ -103,18 +103,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         // GOOGLE MAP
         // Retrieve the content view that renders the map.
-        getActivity().setContentView(R.layout.fragment_map);
+//        getActivity().setContentView(R.layout.fragment_map);
 
         // Get the SupportMapFragment and request notification when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         View view = mapFragment.getView();
         view.setClickable(false);
 
 
 //        syncMap();
-        btn.performClick();
+//        btn.performClick();
         return root;
     }
 
