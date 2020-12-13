@@ -38,7 +38,6 @@ public class LocationTrack extends Service implements LocationListener {
     double longitude;
     TextView locationText;
 
-
     // TODO: meaningful distance updates
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
 
@@ -184,6 +183,5 @@ public class LocationTrack extends Service implements LocationListener {
     public void onProviderDisabled(String s) {
         Log.d("Latitude","disable");
     }
-
 
 }

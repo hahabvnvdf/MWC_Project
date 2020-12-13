@@ -2,11 +2,9 @@ package com.example.stepmapper.ui.map;
 
 import android.Manifest;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,14 +33,12 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     // Views
-    private Button mLocationButton;
     private TextView locationText;
     private LocationTrack locationTrack;
     private Boolean LocationIsActive;
@@ -75,60 +71,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         database_r = databaseOpenHelper.getReadableDatabase();
 
         Button btn = (Button) root.findViewById(R.id.btn);
-        btn.setOnClickListener(this);
 
-
-/*
-        root.findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(map != null)
                 {
-                    Toast.makeText(getActivity(),"Clicked!!", Toast.LENGTH_SHORT).show();
                     Log.d("LOCATION_TRACK", "click");
-                    btn.performClick();
+                    toggleTracking();
                 }
             }
         });
 
- */
-/*
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("LOCATION_TRACK", "click");
-                toggleTracking();
-        });
- */
-
         // GOOGLE MAP
-        // Retrieve the content view that renders the map.
-//        getActivity().setContentView(R.layout.fragment_map);
-
         // Get the SupportMapFragment and request notification when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         View view = mapFragment.getView();
         view.setClickable(false);
 
-
-//        syncMap();
-//        btn.performClick();
         return root;
-    }
-
-    @Override
-    public void onClick(View v) {
-        Log.d("LOCATION_TRACK", "click registered");
-
-        switch (v.getId()) {
-            case R.id.btn: {
-                toggleTracking();
-                break;
-            }
-            default:
-                break;
-        }
     }
 
     public void toggleTracking() {
@@ -138,14 +100,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         if (LocationIsActive) {
             Log.d("LOCATION_TRACK", "active");
             btn.setText(getString(R.string.stop_tracking));
-            //                getLocation();
             getCoarseLocation();
             getFineLocation();
 
             // TODO: erase database at new toggle
 //                    database_w.deleteRecords(this.getContext());
             int numberDeletedRecords = database_w.delete(StepAppOpenHelper.TABLE_NAME, null, null);
-
+            map.clear();
 
             locationTrack = new LocationTrack(getActivity());
             locationTrack.setTextViewToModify(locationText);
@@ -169,7 +130,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             locationTrack.stopListener();
         }
         super.onDestroy();
-
     }
 
     @Override
@@ -178,7 +138,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             locationTrack.stopListener();
         }
         super.onDestroyView();
-//        locationTrack.stopListener();
     }
 
     private void startTimerThread() {
@@ -229,7 +188,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                             }else{
                                 firstMarker = marker;
                             }
-
 
                             // Move view to this position
                             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
@@ -352,22 +310,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             return;
         }
         map.setMyLocationEnabled(true);
-
-
-//        map.setOnMapClickListener(new GoogleMap.OnMapClickListener()
-//        {
-//            @Override
-//            public void onMapClick(LatLng arg0)
-//            {
-//                Toast.makeText(getActivity(),"Clicked!!", Toast.LENGTH_SHORT).show();
-//                Log.d("LOCATION_TRACK", "click");
-//            }
-//        });
-
-
-
     }
-
 
 }
 
