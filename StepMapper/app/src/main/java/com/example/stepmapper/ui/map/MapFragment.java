@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -143,15 +144,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void startTimerThread() {
         polyTrack = new PolylineOptions();
         th = new Thread(new Runnable() {
-            private MarkerOptions markerOptions = new MarkerOptions()
-                    .position(new LatLng(locationTrack.getLatitude(), locationTrack.getLongitude()));
             private Marker marker;
             private Marker firstMarker;
             private List<Marker> markerList = new ArrayList<>();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString;
             public void run() {
-//                marker = map.addMarker(markerOptions.position(
-//                        new LatLng(locationTrack.getLatitude(),
-//                                locationTrack.getLongitude())));
                 while (LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -164,33 +162,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                             Date date = new Date();
                             // Insert the data in the database
-                            Timestamp timeStamp = new Timestamp(date.getTime());
+//                            Timestamp timeStamp = new Timestamp(date.getTime());
+                            String timestamp = dateString = format.format(date);
                             ContentValues values = new ContentValues();
-                            values.put(StepAppOpenHelper.KEY_TIMESTAMP, timeStamp.toString());
+                            values.put(StepAppOpenHelper.KEY_TIMESTAMP, timestamp);
                             values.put(StepAppOpenHelper.KEY_LAT, latitude);
                             values.put(StepAppOpenHelper.KEY_LON, longitude);
                             database_w.insert(StepAppOpenHelper.TABLE_NAME, null, values);
                             // add point to polyline
                             polyTrack.add(new LatLng(latitude, longitude));
                             polyline = map.addPolyline(polyTrack);
-                            // Move marker to this position
-
+                            // Move marker to new position
                             if (markerList != null && map != null) {
                                 for (int i = 0; i < markerList.size(); i++) {
                                     markerList.get(i).remove();
                                 }
                             }
-                            marker = map.addMarker(new MarkerOptions().position(
-                                    new LatLng(locationTrack.getLatitude(),
-                                            locationTrack.getLongitude())));
                             if(firstMarker!=null){
+                                marker = setMarker(latitude, longitude,"End", timestamp);
                                 markerList.add(marker);
                             }else{
-                                firstMarker = marker;
+                                firstMarker = setMarker(latitude, longitude, "Start", timestamp);
+                                // Move view to this position
+                                map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
                             }
-
-                            // Move view to this position
-                            map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
                         }
                     });
                     try {
@@ -256,6 +251,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private Marker setMarker (Double lat, Double lon, String title){
+        return setMarker(lat, lon, title, null);
+    }
+
+
+                              private Marker setMarker (Double lat, Double lon, String title, String snippet){
+        if (map!=null){
+            Marker marker = map.addMarker(new MarkerOptions().position(
+                    new LatLng(lat, lon)));
+            if (title!=null){
+                marker.setTitle(title);
+            }
+            if (snippet!=null){
+                marker.setSnippet(snippet);
+            }
+            return marker;
+        }
+        return null;
+    }
 
     // [START maps_poly_activity_on_polyline_click]
 
@@ -265,20 +279,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT};
+        String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT, StepAppOpenHelper.KEY_TIMESTAMP};
         Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
                 null, StepAppOpenHelper.KEY_TIMESTAMP);
 
-        Double firstLat = 0.0;
-        Double firstLon = 0.0;
+        Double firstLat, firstLon, lat, lon;
+        firstLat = firstLon = lat = lon = 0.0;
+        String firstTimestamp, timestamp;
+        firstTimestamp = timestamp = "";
         polyTrack = new PolylineOptions();
 
         // iterate over returned elements
         if (cursor.moveToFirst()) {
             firstLon = Double.parseDouble(cursor.getString(0));
             firstLat = Double.parseDouble(cursor.getString(1));
-            Double lon = firstLon;
-            Double lat = firstLat;
+            firstTimestamp = cursor.getString(2);
+            lon = firstLon;
+            lat = firstLat;
+            timestamp = firstTimestamp;
+
 
             Log.d("DATA_READ", "start " + firstLon + "/" + firstLat);
             for (int index = 0; index < cursor.getCount(); index++) {
@@ -298,6 +317,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
         Log.d("DATA_READ", "end");
 
+        setMarker(firstLat,firstLon, "Start", firstTimestamp);
+        setMarker(lat, lon, "End", timestamp);
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
