@@ -278,7 +278,7 @@ class StepCounterListener implements SensorEventListener {
 
         MainActivity mm = new MainActivity();
         int windowSize = 20;
-        
+
         /* Peak detection algorithm derived from: A Step Counter Service for Java-Enabled Devices Using a Built-In Accelerometer, Mladenov et al.
          */
         int highestValX = mACCSeries.size(); // get the length of the series
