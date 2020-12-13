@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/location_text"
+        android:id="@+id/timestamp_text"
         android:layout_width="0dp"
         android:layout_height="62dp"
         android:layout_marginStart="8dp"
