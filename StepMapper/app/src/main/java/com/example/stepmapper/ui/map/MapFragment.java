@@ -71,7 +71,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         database_r = databaseOpenHelper.getReadableDatabase();
 
         Button btn = (Button) root.findViewById(R.id.btn);
-
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +129,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             locationTrack.stopListener();
         }
         super.onDestroy();
+        if (th.isAlive()) th.interrupt();
     }
 
     @Override
@@ -138,6 +138,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             locationTrack.stopListener();
         }
         super.onDestroyView();
+        if (th.isAlive()) th.interrupt();
     }
 
     private void startTimerThread() {

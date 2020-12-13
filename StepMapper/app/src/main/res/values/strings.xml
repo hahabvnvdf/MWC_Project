@@ -22,7 +22,7 @@
     <string name="stop_tracking">Stop tracking</string>
     <string name="latitude">0.0</string>
     <string name="longitude">0.0</string>
-    <string name="location_text">"Latitude: 0.0\nLongitude: 0.0"</string>
+    <string name="timestamp_text">"Start:\t" + "yyyy-MM-dd HH:mm:ss" + "\nEnd:\t\t" + "yyyy-MM-dd HH:mm:ss"</string>
     <string name="title_activity_maps">Track Map</string>
     <string name="step_permission_denied">permission denied</string>
     <string name="acc_not_available">ACC not available</string>
