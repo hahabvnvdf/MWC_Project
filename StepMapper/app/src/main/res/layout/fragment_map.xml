@@ -13,11 +13,10 @@
         android:layout_width="143dp"
         android:layout_height="39dp"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
         android:text="@string/start_tracking"
         android:textAlignment="center"
         android:textColor="@color/background"
-        app:layout_constraintBottom_toTopOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,10 +39,11 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn"
         tools:context="com.example.polygons.PolyActivity"
         tools:layout_editor_absoluteX="0dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
