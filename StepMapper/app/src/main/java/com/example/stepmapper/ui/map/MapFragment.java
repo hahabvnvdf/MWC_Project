@@ -128,8 +128,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
+//        if (th.isAlive()) th.interrupt();
         super.onDestroy();
-        if (th.isAlive()) th.interrupt();
     }
 
     @Override
@@ -137,8 +137,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
+//        if (th.isAlive()) th.interrupt();
         super.onDestroyView();
-        if (th.isAlive()) th.interrupt();
     }
 
     private void startTimerThread() {
