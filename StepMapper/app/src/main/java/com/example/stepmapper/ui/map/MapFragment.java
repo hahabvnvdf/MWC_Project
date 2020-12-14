@@ -118,7 +118,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         } else {
             Log.d("LOCATION_TRACK", "not active");
-            if (th.isAlive()) th.interrupt();
+            if (th!=null && th.isAlive()) th.interrupt();
             btn.setText(getString(R.string.start_tracking));
         }
     }
@@ -128,7 +128,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
-//        if (th.isAlive()) th.interrupt();
+        if (th!=null && th.isAlive()) th.interrupt();
         super.onDestroy();
     }
 
@@ -137,7 +137,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
-//        if (th.isAlive()) th.interrupt();
+        if (th!=null && th.isAlive()) th.interrupt();
         super.onDestroyView();
     }
 
@@ -150,7 +150,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             private String timestamp, firstTimestamp;
 
             public void run() {
-                while (LocationIsActive) {
+                while (getActivity()!=null && LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
