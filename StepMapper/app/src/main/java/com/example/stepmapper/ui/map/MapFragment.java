@@ -74,13 +74,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(map != null)
+            if(map != null)
                 {
-                    Log.d("LOCATION_TRACK", "click");
                     toggleTracking();
                 }
             }
         });
+
+        getCoarseLocation();
+        getFineLocation();
 
         // GOOGLE MAP
         // Get the SupportMapFragment and request notification when the map is ready to be used.
@@ -102,8 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             getCoarseLocation();
             getFineLocation();
 
-            // TODO: erase database at new toggle
-//                    database_w.deleteRecords(this.getContext());
+            // Erase database at new toggle
             int numberDeletedRecords = database_w.delete(StepAppOpenHelper.TABLE_NAME, null, null);
             map.clear();
 
@@ -157,7 +158,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             locationTrack = new LocationTrack(getActivity());
                             double longitude = locationTrack.getLongitude();
                             double latitude = locationTrack.getLatitude();
-                            Log.d("LOCTIME", "update " + longitude + "/" + latitude);
+                            Log.d("LOCTIME", "update " + latitude + "/" + longitude);
 
                             Date date = new Date();
                             // Insert the data in the database
@@ -210,20 +211,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_FINE_LOCATION_PERMISSION);
         } else {
-            Log.d("Fine Position", "Permission denied");
+            Log.d("Location_Update", "ACCESS_FINE_LOCATION Permission denied");
             return;
         }
     }
 
     private void getCoarseLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]
                             {Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_COARSE_LOCATION_PERMISSION);
         } else {
-            Log.d("Coarse Position", "Permission denied");
+            Log.d("Location_Update", "ACCESS_COARSE_LOCATION Permission denied");
             return;
         }
     }
@@ -324,14 +325,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp);
 
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            getCoarseLocation();
+            getFineLocation();
             return;
         }
         map.setMyLocationEnabled(true);

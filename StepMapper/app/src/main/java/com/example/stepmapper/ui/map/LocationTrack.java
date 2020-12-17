@@ -51,7 +51,6 @@ public class LocationTrack extends Service implements LocationListener {
     }
 
     private Location getLocation() {
-
         try {
             locationManager = (LocationManager) mContext
                     .getSystemService(Context.LOCATION_SERVICE);
@@ -69,8 +68,7 @@ public class LocationTrack extends Service implements LocationListener {
 
                 // if GPS Enabled get lat/long using GPS Services
                 if (checkGPS) {
-
-                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                     }
@@ -79,19 +77,23 @@ public class LocationTrack extends Service implements LocationListener {
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     if (locationManager != null) {
-                        loc = locationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if(checkGPS){
+                            loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        } else{
+                            loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        }
                         if (loc != null) {
                             latitude = loc.getLatitude();
                             longitude = loc.getLongitude();
+                            Log.d("Location_Update", "update " + latitude + "/" + longitude);
                         }
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("Location_Update", String.valueOf(e));
         }
-
         return loc;
     }
 
@@ -165,6 +167,8 @@ public class LocationTrack extends Service implements LocationListener {
 
         if (location != null) {
             loc=location;
+            getLatitude();
+            getLongitude();
             Log.d("onLocationChanged","update"+location);
         }
     }
