@@ -119,7 +119,17 @@ public class MainActivity extends AppCompatActivity  {
 
         // Ask for activity recognition permission
         if (runningQOrLater) {
-            getActivity();
+            int PERMISSION_ALL = 1;
+            String[] PERMISSIONS = {
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            };
+
+            if (!hasPermissions(this, PERMISSIONS)) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            }
+
         }
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
@@ -221,6 +231,18 @@ public class MainActivity extends AppCompatActivity  {
                 || super.onSupportNavigateUp();
     }
 
+    public static boolean hasPermissions(
+            android.content.Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     // Ask for permission
     private void getActivity() {
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
@@ -232,6 +254,31 @@ public class MainActivity extends AppCompatActivity  {
         } else {
             return;        }
     }
+    private void getFineLocation() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION_PERMISSION);
+        } else {
+            Log.d("Location_Update", "ACCESS_FINE_LOCATION Permission denied");
+            return;
+        }
+    }
+
+    private void getCoarseLocation() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_COARSE_LOCATION_PERMISSION);
+        } else {
+            Log.d("Location_Update", "ACCESS_COARSE_LOCATION Permission denied");
+            return;
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -240,6 +287,26 @@ public class MainActivity extends AppCompatActivity  {
             if(grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getActivity();
+            } else {
+                Toast.makeText(this,
+                        R.string.step_permission_denied,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == REQUEST_COARSE_LOCATION_PERMISSION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCoarseLocation();
+            } else {
+                Toast.makeText(this,
+                        R.string.step_permission_denied,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == REQUEST_FINE_LOCATION_PERMISSION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getFineLocation();
             } else {
                 Toast.makeText(this,
                         R.string.step_permission_denied,
