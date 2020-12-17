@@ -51,6 +51,8 @@ public class LocationTrack extends Service implements LocationListener {
     }
 
     private Location getLocation() {
+        Log.d("Location_Update", "1");
+
 
         try {
             locationManager = (LocationManager) mContext
@@ -63,35 +65,58 @@ public class LocationTrack extends Service implements LocationListener {
             checkNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!checkGPS && !checkNetwork) {
+                Log.d("Location_Update", "2");
                 Toast.makeText(mContext, "No Service Provider is available", Toast.LENGTH_SHORT).show();
             } else {
+                Log.d("Location_Update", "3");
                 this.canGetLocation = true;
 
                 // if GPS Enabled get lat/long using GPS Services
                 if (checkGPS) {
-
-                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Location_Update", "4");
+                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
+
+                        Log.d("Location_Update", "5");
                     }
-                    locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("Location_Update", "4.5");
+//                    locationManager.requestLocationUpdates(
+//                            LocationManager.GPS_PROVIDER,
+//                            MIN_TIME_BW_UPDATES,
+//                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("Location_Update", "5.5");
                     if (locationManager != null) {
-                        loc = locationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        Log.d("Location_Update", "6");
+                        Log.d("Location_Update", String.valueOf(checkGPS));
+
+                        //TODO: FIX BROKEN HERE
+                        if(checkGPS){
+                            Log.d("Location_Update", "6.1");
+                            loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        } else{
+                            Log.d("Location_Update", "6.2");
+                            loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        }
+//                        loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        Log.d("Location_Update", "6.5");
                         if (loc != null) {
                             latitude = loc.getLatitude();
                             longitude = loc.getLongitude();
+
+                            Log.d("Location_Update", "update " + latitude + "/" + longitude);
                         }
                     }
+                    Log.d("Location_Update", "5.9");
+
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("Location_Update", "7");
+            Log.d("Location_Update", String.valueOf(e));
         }
-
+        Log.d("Location_Update", "8");
         return loc;
     }
 
@@ -165,6 +190,8 @@ public class LocationTrack extends Service implements LocationListener {
 
         if (location != null) {
             loc=location;
+            getLatitude();
+            getLongitude();
             Log.d("onLocationChanged","update"+location);
         }
     }
