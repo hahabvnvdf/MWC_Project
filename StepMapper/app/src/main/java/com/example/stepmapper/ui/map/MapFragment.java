@@ -82,6 +82,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        getCoarseLocation();
+        getFineLocation();
+
         // GOOGLE MAP
         // Get the SupportMapFragment and request notification when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -324,7 +327,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp);
 
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -332,6 +335,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            getCoarseLocation();
+            getFineLocation();
             return;
         }
         map.setMyLocationEnabled(true);
