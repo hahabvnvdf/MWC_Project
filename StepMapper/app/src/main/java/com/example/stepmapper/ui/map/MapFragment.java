@@ -74,9 +74,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(map != null)
+            if(map != null)
                 {
-                    Log.d("LOCATION_TRACK", "click");
                     toggleTracking();
                 }
             }
@@ -105,8 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             getCoarseLocation();
             getFineLocation();
 
-            // TODO: erase database at new toggle
-//                    database_w.deleteRecords(this.getContext());
+            // Erase database at new toggle
             int numberDeletedRecords = database_w.delete(StepAppOpenHelper.TABLE_NAME, null, null);
             map.clear();
 
@@ -328,13 +326,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             getCoarseLocation();
             getFineLocation();
             return;
