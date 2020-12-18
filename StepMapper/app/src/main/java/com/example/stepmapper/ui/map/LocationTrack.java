@@ -38,11 +38,10 @@ public class LocationTrack extends Service implements LocationListener {
     double longitude;
     TextView locationText;
 
-    // TODO: meaningful distance updates
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-
-    // TODO: meaningful update times
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    // Distance updates
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
+    // Time between updates
+    private static final long MIN_TIME_BW_UPDATES = 1000;
     protected LocationManager locationManager;
 
     public LocationTrack(Context mContext) {

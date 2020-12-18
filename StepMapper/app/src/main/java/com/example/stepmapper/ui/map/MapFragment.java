@@ -155,7 +155,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            locationTrack = new LocationTrack(getActivity());
                             double longitude = locationTrack.getLongitude();
                             double latitude = locationTrack.getLatitude();
                             Log.d("LOCTIME", "update " + latitude + "/" + longitude);
