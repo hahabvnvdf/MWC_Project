@@ -127,22 +127,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         if (locationTrack != null) {
             locationTrack.stopListener();
         }
         if (th != null && th.isAlive())
             th.interrupt();
-        super.onDestroy();
     }
 
     @Override
     public void onDestroyView() {
+        super.onDestroyView();
         if (locationTrack != null) {
             locationTrack.stopListener();
         }
         if (th != null && th.isAlive())
             th.interrupt();
-        super.onDestroyView();
     }
 
     private void startTimerThread() {
