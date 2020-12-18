@@ -39,7 +39,7 @@ public class LocationTrack extends Service implements LocationListener {
     TextView locationText;
 
     // Distance updates
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 2;
     // Time between updates
     private static final long MIN_TIME_BW_UPDATES = 1000;
     protected LocationManager locationManager;

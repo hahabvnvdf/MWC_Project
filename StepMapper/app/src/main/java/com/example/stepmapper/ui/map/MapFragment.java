@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private Polyline polyline;
     private PolylineOptions polyTrack;
+    private float distance;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -143,6 +145,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void startTimerThread() {
+        distance = 0;
         polyTrack = new PolylineOptions();
         th = new Thread(new Runnable() {
             private Marker marker, firstMarker;
@@ -151,6 +154,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             private String timestamp, firstTimestamp;
 
             public void run() {
+                final Location locationA = new Location("point A");
+                final Location locationB = new Location("point B");
                 while (LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -179,14 +184,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             if(firstMarker!=null){
                                 marker = setMarker(latitude, longitude,"End", timestamp);
                                 markerList.add(marker);
+
+                                // Compute route distance
+                                locationB.setLatitude(latitude);
+                                locationB.setLongitude(longitude);
+                                distance += locationA.distanceTo(locationB);
+                                locationA.setLatitude(latitude);
+                                locationA.setLongitude(longitude);
                             }else{
                                 // FIRST POSITION
                                 firstMarker = setMarker(latitude, longitude, "Start", timestamp);
                                 firstTimestamp = timestamp;
                                 // Move view to this position
                                 map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+
+                                locationA.setLatitude(latitude);
+                                locationA.setLongitude(longitude);
                             }
-                            timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp);
+
+                            timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp+"\nDistance: "+(int)distance+" m");
 
                         }
                     });
@@ -296,10 +312,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             firstLon = Double.parseDouble(cursor.getString(0));
             firstLat = Double.parseDouble(cursor.getString(1));
             firstTimestamp = cursor.getString(2);
+            Location locationA = new Location("point A");
+            Location locationB = new Location("point B");
+            locationA.setLatitude(firstLat);
+            locationA.setLongitude(firstLon);
             lon = firstLon;
             lat = firstLat;
             timestamp = firstTimestamp;
-
+            distance = 0;
 
             Log.d("DATA_READ", "start " + firstLon + "/" + firstLat);
             for (int index = 0; index < cursor.getCount(); index++) {
@@ -308,6 +328,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 polyTrack.add(new LatLng(lat, lon));
                 Log.d("DATA_READ", "lat: " + lat + ", lon: " + lon);
+
+                // Compute route distance
+                locationB.setLatitude(lat);
+                locationB.setLongitude(lon);
+                distance += locationA.distanceTo(locationB);
+                locationA.setLatitude(lat);
+                locationA.setLongitude(lon);
+
                 cursor.moveToNext();
             }
         }
@@ -321,7 +349,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         setMarker(firstLat,firstLon, "Start", firstTimestamp);
         setMarker(lat, lon, "End", timestamp);
-        timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp);
+        timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp+"\nDistance: "+(int)distance+" m");
 
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -330,6 +358,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
         map.setMyLocationEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
     }
 
 }
