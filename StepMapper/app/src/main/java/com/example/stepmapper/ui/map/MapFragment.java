@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -57,8 +56,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private PolylineOptions polyTrack;
     private float distance;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         if (container != null) {
             container.removeAllViews();
@@ -76,8 +74,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(map != null)
-                {
+                if (map != null) {
                     toggleTracking();
                 }
             }
@@ -87,7 +84,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         getFineLocation();
 
         // GOOGLE MAP
-        // Get the SupportMapFragment and request notification when the map is ready to be used.
+        // Get the SupportMapFragment and request notification when the map is ready to
+        // be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         View view = mapFragment.getView();
@@ -121,7 +119,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         } else {
             Log.d("LOCATION_TRACK", "not active");
-            if (th.isAlive()) th.interrupt();
+            if (th != null && th.isAlive())
+                th.interrupt();
             btn.setText(getString(R.string.start_tracking));
         }
     }
@@ -131,8 +130,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
+        if (th != null && th.isAlive())
+            th.interrupt();
         super.onDestroy();
-        if (th.isAlive()) th.interrupt();
     }
 
     @Override
@@ -140,8 +140,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (LocationIsActive) {
             locationTrack.stopListener();
         }
+        if (th != null && th.isAlive())
+            th.interrupt();
         super.onDestroyView();
-        if (th.isAlive()) th.interrupt();
     }
 
     private void startTimerThread() {
@@ -156,7 +157,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void run() {
                 final Location locationA = new Location("point A");
                 final Location locationB = new Location("point B");
-                while (LocationIsActive) {
+                while (getActivity() != null && LocationIsActive) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -181,8 +182,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     markerList.get(i).remove();
                                 }
                             }
-                            if(firstMarker!=null){
-                                marker = setMarker(latitude, longitude,"End", timestamp);
+                            if (firstMarker != null) {
+                                marker = setMarker(latitude, longitude, "End", timestamp);
                                 markerList.add(marker);
 
                                 // Compute route distance
@@ -191,7 +192,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 distance += locationA.distanceTo(locationB);
                                 locationA.setLatitude(latitude);
                                 locationA.setLongitude(longitude);
-                            }else{
+                            } else {
                                 // FIRST POSITION
                                 firstMarker = setMarker(latitude, longitude, "Start", timestamp);
                                 firstTimestamp = timestamp;
@@ -202,7 +203,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 locationA.setLongitude(longitude);
                             }
 
-                            timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp+"\nDistance: "+(int)distance+" m");
+                            timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp
+                                    + "\nDistance: " + (int) distance + " m");
 
                         }
                     });
@@ -217,13 +219,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         th.start();
     }
 
-
     private void getFineLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                     REQUEST_FINE_LOCATION_PERMISSION);
         } else {
             Log.d("Location_Update", "ACCESS_FINE_LOCATION Permission denied");
@@ -233,11 +232,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void getCoarseLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]
-                            {Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_COARSE_LOCATION_PERMISSION);
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[] { Manifest.permission.ACCESS_COARSE_LOCATION }, REQUEST_COARSE_LOCATION_PERMISSION);
         } else {
             Log.d("Location_Update", "ACCESS_COARSE_LOCATION Permission denied");
             return;
@@ -245,43 +242,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_COARSE_LOCATION_PERMISSION) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCoarseLocation();
             } else {
-                Toast.makeText(getActivity(),
-                        R.string.step_permission_denied,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.step_permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
         if (requestCode == REQUEST_FINE_LOCATION_PERMISSION) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getFineLocation();
             } else {
-                Toast.makeText(getActivity(),
-                        R.string.step_permission_denied,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.step_permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private Marker setMarker (Double lat, Double lon, String title){
+    private Marker setMarker(Double lat, Double lon, String title) {
         return setMarker(lat, lon, title, null);
     }
 
-
-                              private Marker setMarker (Double lat, Double lon, String title, String snippet){
-        if (map!=null){
-            Marker marker = map.addMarker(new MarkerOptions().position(
-                    new LatLng(lat, lon)));
-            if (title!=null){
+    private Marker setMarker(Double lat, Double lon, String title, String snippet) {
+        if (map != null) {
+            Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+            if (title != null) {
                 marker.setTitle(title);
             }
-            if (snippet!=null){
+            if (snippet != null) {
                 marker.setSnippet(snippet);
             }
             return marker;
@@ -292,14 +281,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // [START maps_poly_activity_on_polyline_click]
 
     /**
-     * Manipulates the map when it's available.
-     * The API invokes this callback when the map is ready to be used
+     * Manipulates the map when it's available. The API invokes this callback when
+     * the map is ready to be used
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String[] columns = new String[]{StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT, StepAppOpenHelper.KEY_TIMESTAMP};
-        Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null,
-                null, StepAppOpenHelper.KEY_TIMESTAMP);
+        String[] columns = new String[] { StepAppOpenHelper.KEY_LON, StepAppOpenHelper.KEY_LAT,
+                StepAppOpenHelper.KEY_TIMESTAMP };
+        Cursor cursor = database_r.query(StepAppOpenHelper.TABLE_NAME, columns, null, null, null, null,
+                StepAppOpenHelper.KEY_TIMESTAMP);
 
         Double firstLat, firstLon, lat, lon;
         firstLat = firstLon = lat = lon = 0.0;
@@ -340,19 +330,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
         polyline = googleMap.addPolyline(polyTrack);
-//        database_r.close();
+        // database_r.close();
 
         // Position the map's camera at the start
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(firstLat, firstLon), 16));
         map = googleMap;
         Log.d("DATA_READ", "end");
 
-        setMarker(firstLat,firstLon, "Start", firstTimestamp);
+        setMarker(firstLat, firstLon, "Start", firstTimestamp);
         setMarker(lat, lon, "End", timestamp);
-        timestampText.setText("Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp+"\nDistance: "+(int)distance+" m");
+        timestampText.setText(
+                "Start:\t" + firstTimestamp + "\nEnd:\t\t" + timestamp + "\nDistance: " + (int) distance + " m");
 
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             getCoarseLocation();
             getFineLocation();
             return;
@@ -362,4 +355,3 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 }
-

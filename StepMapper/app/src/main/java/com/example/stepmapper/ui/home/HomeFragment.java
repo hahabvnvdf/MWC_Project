@@ -101,7 +101,9 @@ public class HomeFragment extends Fragment {
         final Button closeGoal = (Button) root.findViewById(R.id.goalClose);
         final Button setGoalBtn = (Button) root.findViewById(R.id.goalSetBtn);
         final TextInputEditText goalEditText = (TextInputEditText) root.findViewById(R.id.textGoal);
-
+        if (goalEditText.getText() != null) {
+            goal = goalEditText.getText().toString();
+        }
 
         goalTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,10 +318,13 @@ class StepCounterListener implements SensorEventListener {
                 if (forwardSlope < 0 && downwardSlope > 0 && dataPointList.get(i) > stepThreshold ) {
                     mACCStepCounter += 1;
                     //When Goal is reached call the Congrats activity
-                    if(mACCStepCounter == Integer.parseInt(HomeFragment.goal))
-                    {
-                        HomeFragment.ShowCongrats();
+                    if(!HomeFragment.goal.equals("")){
+                        if(mACCStepCounter == Integer.parseInt(HomeFragment.goal))
+                        {
+                            HomeFragment.ShowCongrats();
+                        }
                     }
+
                     //update the text view
                     stepsCountTextView.setText(String.valueOf(mACCStepCounter));
                     //update the ProgressBar
