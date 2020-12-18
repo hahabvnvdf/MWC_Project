@@ -127,7 +127,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroy() {
-        if (LocationIsActive) {
+        if (locationTrack != null) {
             locationTrack.stopListener();
         }
         if (th != null && th.isAlive())
@@ -137,7 +137,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDestroyView() {
-        if (LocationIsActive) {
+        if (locationTrack != null) {
             locationTrack.stopListener();
         }
         if (th != null && th.isAlive())
